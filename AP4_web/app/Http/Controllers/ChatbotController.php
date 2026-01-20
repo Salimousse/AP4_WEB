@@ -32,6 +32,17 @@ class ChatbotController extends Controller
             - Activités : Concerts, Ateliers.
             IMPORTANT:
             - Si tu ne sais pas répondre, dis que tu ne peux pas répondre.
+            - Reponds à l'utilisateur sur toutes ces questions à propos du festival :
+              - Dates et horaires
+              - Lieu et accès
+              - Programmation musicale
+              - Ateliers et activités
+              - Tarifs et billets
+              - Hébergement à proximité
+              - Restauration sur place
+              - Mesures sanitaires
+              - Contacts et informations supplémentaires
+            - Ne parle pas d'autres sujets.
             - Réponds en français.
         ";
 

@@ -21,6 +21,9 @@
                     <x-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.edit')">
                         {{ __('Profil') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('page.mes-reservations')" :active="request()->routeIs('page.mes-reservations')">
+                        {{ __('Mes Réservations') }}
+                    </x-nav-link>
                 </div>
             </div>
 

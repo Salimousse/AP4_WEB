@@ -6,6 +6,12 @@ use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
+    public function festival()
+    {
+        $festival = \App\Models\Festival::with('manifestations')->first();
+        return view('pages.page-festival', compact('festival'));
+    }
+
     public function about()
     {
         return view('pages.about');

@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\Reservation;
+use App\Models\Client;
 
 class ProfileController extends Controller
 {
@@ -57,4 +59,27 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function ShowTicket()
+    {
+        // 1. On récupère l'utilisateur connecté
+        $user = Auth::user();
+
+        // 2. On cherche sa fiche Client via l'email
+        $client = Client::where('MAILCLIENT', $user->email)->first();
+
+        $reservations = [];
+
+        if ($client) {
+            // 3. On récupère ses réservations avec les infos du Billet et de la Manif
+            $reservations = Reservation::where('IDPERS', $client->IDPERS)
+                                ->with(['manifestation', 'billet']) // "Eager loading" pour optimiser
+                                ->orderBy('DATEHEURERESERVATION', 'desc')
+                                ->get();
+        }
+
+        return view('pages.mes-reservations', compact('reservations'));
+    }
 }
+
+
