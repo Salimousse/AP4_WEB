@@ -6,10 +6,13 @@
     <title>Festival Cale Sons - Accueil</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
+    
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased bg-white">
-    <!-- Newsletter Popup -->
     <div x-data="{ show: !localStorage.getItem('newsletter-closed') }" x-show="show" x-transition class="fixed top-0 left-0 right-0 z-50 bg-festival-light shadow-lg border-b border-festival-dark/10">
         <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-6">
             <div>
@@ -28,7 +31,6 @@
 
     @include('layouts.header')
 
-    <!-- Hero -->
     <section class="h-[500px] bg-gradient-to-br from-festival-primary to-festival-secondary flex items-center justify-center">
         <div class="text-center text-white px-6">
             <h2 class="text-5xl font-bold mb-4">Festival Cale Sons 2026</h2>
@@ -36,7 +38,6 @@
         </div>
     </section>
 
-    <!-- Content -->
     @php
         $sections = [
             ['4 jours de festival', 'En août 2026, le festival revient avec une programmation enrichie : concerts, expositions, conférences et ateliers dans plusieurs lieux emblématiques.'],
@@ -55,7 +56,6 @@
         </div>
     </section>
 
-    <!-- Sponsors -->
     <section class="py-16 bg-festival-light">
         <div class="max-w-7xl mx-auto px-6">
             <h3 class="text-center text-2xl font-bold text-festival-dark mb-12">Nos partenaires</h3>
@@ -70,5 +70,8 @@
     </section>
 
     @include('layouts.footer')
+
+    <x-chatbot-widget />
+
 </body>
 </html>

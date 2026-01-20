@@ -6,6 +6,7 @@ use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\MicrosoftAuthController; // N'oublie pas l'import en haut !
 use App\Http\Controllers\FacebookAuthController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\ChatbotController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -44,5 +45,7 @@ Route::get('/a-propos', [PageController::class, 'about'])->name('about');
 Route::get('/politique-de-confidentialite', [PageController::class, 'privacy'])->name('privacy');
 Route::get('/conditions-de-vente', [PageController::class, 'terms'])->name('terms');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
+
+Route::post('/chat/{conversationId}/send', [ChatbotController::class, 'sendMessage']);
 
 require __DIR__.'/auth.php';
