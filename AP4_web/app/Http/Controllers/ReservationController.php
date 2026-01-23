@@ -83,10 +83,10 @@ class ReservationController extends Controller
 
         // On lance la création réelle en BDD (IDTYPEPAIEMENT = 1 pour CB)
         $billet = $this->creationFinale($data, 1);
-        return redirect()->route('reservation.success', $billet->IDBILLET);
-    // - Créer le client, la réservation et le billet
-    // - ET retourner la redirection vers la page success
-    return $this->creationFinale($data, 1); 
+
+        // Redirige vers la page ticket-reservation (route page.ticket-reservation)
+        return redirect()->route('page.ticket-reservation', ['idBillet' => $billet->IDBILLET])
+            ->with('success', 'Paiement validé ! Voici votre billet.');
 }
 
     // FONCTION PRIVÉE : Pour éviter de copier-coller le code d'insertion
@@ -134,7 +134,7 @@ public function showTicket($idBillet)
     // On charge le billet ET les infos liées (Client + Manif)
     $billet = Billet::with(['client', 'manifestation'])->findOrFail($idBillet);
 
-    return view('reservation.ticket', compact('billet'));
+    return view('pages.ticket-reservation', compact('billet'));
 }
     
     

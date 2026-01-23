@@ -23,30 +23,34 @@ Route::get('/connected-accounts', function () {
     return view('connected-accounts');
 })->middleware(['auth', 'verified'])->name('connected-accounts');
 
+
+
+Route::get("/login-admin", function () {
+    return view("auth.login-admin");
+})->name("login-admin");
+
+// Espace admin : dashboard protégé par le middleware is_admin
+Route::middleware(['auth', 'is_admin'])->group(function () {
+    Route::get('/admin/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
+});
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    // 1. Afficher le formulaire
-    Route::get('/reservation/{idManif}', [ReservationController::class, 'showForm'])
-        ->name('reservation.create');
-    
-    // 2. Traitement (Envoie vers Stripe OU crée direct si gratuit)
-    Route::post('/reservation', [ReservationController::class, 'store'])
-        ->name('reservation.store');
+    Route::get('/reservation/{idManif}', [ReservationController::class, 'showForm'])->name('reservation.create');
+    Route::post('/reservation', [ReservationController::class, 'store'])->name('reservation.store');
+    Route::get('/mes-reservations', [ProfileController::class, 'ShowTicket'])->name('page.mes-reservations');
+}); // <-- cette accolade ferme le groupe auth
 
-    // (retiré du groupe auth)
-// 3. Retour de Stripe (Validation finale et enregistrement en BDD) - accessible sans auth
-Route::get('/reservation/validation', [ReservationController::class, 'validerPaiement'])
-    ->name('reservation.validation');
-
-    // 4. Afficher le Billet final
-    Route::get('/billet/{idBillet}', [ReservationController::class, 'showTicket'])
-        ->name('reservation.success');
+// Ces routes sont accessibles SANS authentification :
+Route::get('/reservation/validation', [ReservationController::class, 'validerPaiement'])->name('reservation.validation');
+Route::get('/ticket/{idBillet}', [ReservationController::class, 'showTicket'])->name('page.ticket-reservation');
+Route::get('/billet/{idBillet}', [ReservationController::class, 'showTicket'])->name('reservation.success');
 
 
-        Route::get('/mes-reservations', [ProfileController::class, 'ShowTicket'])->name('page.mes-reservations');
-});
+
+
 // Routes pour l'authentification Google et Microsoft
 Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('google-auth');
 Route::get('auth/google/callback', [GoogleAuthController::class, 'callbackGoogle']);

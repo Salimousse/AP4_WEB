@@ -28,6 +28,20 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // Check if admin login attempt
+        if ($request->has('admin_login')) {
+            $user = Auth::user();
+            if (!$user || $user->role !== 'admin') {
+                Auth::logout();
+                return redirect()->route('login-admin')->withErrors(['email' => 'Accès réservé aux administrateurs.']);
+            }
+        }
+
+        // Redirection selon le rôle
+        $user = Auth::user();
+        if ($user && $user->role === 'admin') {
+            return redirect()->intended(route('admin.dashboard'));
+        }
         return redirect()->intended(route('connected-accounts', absolute: false));
     }
 

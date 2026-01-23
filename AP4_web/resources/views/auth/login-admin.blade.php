@@ -4,6 +4,7 @@
 
     <form method="POST" action="{{ route('login') }}">
         @csrf
+        <input type="hidden" name="admin_login" value="1">
 
         <!-- Email Address -->
         <div>
@@ -65,9 +66,6 @@
             <a href="{{ route('auth.facebook') }}" class="flex items-center justify-center px-4 py-2 bg-white border border-festival-dark/20 rounded-lg shadow-sm hover:bg-festival-light">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook Logo" class="w-5 h-5 me-2">
                 <span class="text-sm font-medium text-festival-dark">Se connecter avec Facebook</span>
-            </a>
-            <a href="{{ route('login-admin') }}" class="flex items-center justify-center px-4 py-2 bg-festival-primary text-white border border-festival-dark/20 rounded-lg shadow-sm hover:bg-festival-secondary transition mt-2">
-                <span class="text-sm font-semibold">Connexion administrateur</span>
             </a>
         </div>
     </form>
