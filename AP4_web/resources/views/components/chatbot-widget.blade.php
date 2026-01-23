@@ -65,9 +65,53 @@
             messages: [{ id: 1, sender: 'bot', content: 'Bonjour ! Je suis l\'IA du Festival. Une question ?' }],
             userInput: '',
             isLoading: false,
-            conversationId: 1, 
+conversationId: localStorage.getItem('chatConversationId') || ('conv_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)),
 
-            initChat() { },
+            initChat() {
+                localStorage.setItem('chatConversationId', this.conversationId);
+                this.loadMessages();
+                this.checkForAdminMessage();
+            },
+
+            loadMessages() {
+                axios.get(`/chat/${this.conversationId}/messages`)
+                    .then(res => {
+                        res.data.messages.forEach(msg => {
+                            // Avoid duplicates
+                            if (!this.messages.some(m => m.id === msg.id)) {
+                                this.messages.push({
+                                    id: msg.id,
+                                    sender: msg.sender,
+                                    content: msg.content
+                                });
+                            }
+                        });
+                        this.scrollToBottom();
+                    })
+                    .catch(err => console.log('Load messages error', err));
+            },
+
+            checkForAdminMessage() {
+                if (this.messages.length > 1) { // If conversation started
+                    axios.get(`/chat/${this.conversationId}/check`)
+                        .then(res => {
+                            if (res.data.message) {
+                                // Check if not already in messages
+                                const exists = this.messages.some(msg => msg.content === res.data.message && msg.sender === 'admin');
+                                if (!exists) {
+                                    this.messages.push({ id: Date.now(), sender: 'admin', content: res.data.message });
+                                    this.scrollToBottom();
+                                }
+                            }
+                        })
+                        .catch(err => console.log('Check error', err))
+                        .finally(() => {
+                            setTimeout(() => this.checkForAdminMessage(), 5000); // Poll every 5 seconds
+                        });
+                } else {
+                    setTimeout(() => this.checkForAdminMessage(), 5000);
+                }
+            },
 
             sendMessage() {
                 if (this.userInput.trim() === '') return;
@@ -77,7 +121,7 @@
                 this.scrollToBottom();
                 this.isLoading = true;
 
-                axios.post(`/chat/${this.conversationId}/send`, { message: userMsg })
+                axios.post(`/chat/${this.conversationId}/send`, { message: userMsg, conversationId: this.conversationId })
                     .then(res => {
                         this.messages.push({ id: Date.now() + 1, sender: 'bot', content: res.data.reply });
                     })

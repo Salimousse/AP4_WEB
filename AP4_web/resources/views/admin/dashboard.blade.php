@@ -11,6 +11,7 @@
                 <div class="p-6 text-festival-dark">
                     <h3 class="text-lg font-medium text-festival-dark mb-4">Bienvenue sur l'espace d'administration</h3>
                     <p>Gérez les interventions chatbot, les utilisateurs, etc.</p>
+                    <a href="{{ route('admin.interventions') }}" class="mt-4 inline-block bg-festival-primary text-white px-4 py-2 rounded">Voir les interventions</a>
                 </div>
             </div>
         </div>

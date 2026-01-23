@@ -26,6 +26,11 @@
                         {{ __('Mes Réservations') }}
                     </x-nav-link>
                     @endif
+                    @if(Auth::user()->role === 'admin')
+                    <x-nav-link :href="route('admin.interventions')" :active="request()->routeIs('admin.interventions')">
+                        {{ __('Interventions') }}
+                    </x-nav-link>
+                    @endif
                 </div>
             </div>
 

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Models\Conversation;
+use App\Models\Message;
 
 class ChatbotController extends Controller
 {
@@ -13,16 +15,58 @@ class ChatbotController extends Controller
         // 1. Validation
         $request->validate([
             'message' => 'required|string',
+            'conversationId' => 'required|string',
         ]);
 
         $userMessage = $request->input('message');
+        $conversationId = $request->input('conversationId');
+
+        // 2. Récupérer ou créer la conversation
+        $conversation = Conversation::firstOrCreate(
+            ['conversation_id' => $conversationId],
+            ['admin_active' => false]
+        );
+
+        // 3. Stocker le message utilisateur
+        Message::create([
+            'conversation_id' => $conversation->id,
+            'sender' => 'user',
+            'content' => $userMessage,
+        ]);
+
+        // 4. Vérifier si demande d'humain
+        if (stripos($userMessage, 'humain') !== false || stripos($userMessage, 'admin') !== false || stripos($userMessage, 'parler à') !== false) {
+            $conversation->update(['admin_active' => true]);
+            // Stocker réponse automatique
+            Message::create([
+                'conversation_id' => $conversation->id,
+                'sender' => 'bot',
+                'content' => "Un administrateur va prendre le relais. Veuillez patienter.",
+            ]);
+            return response()->json(['reply' => "Un administrateur va prendre le relais. Veuillez patienter."]);
+        }
+
+        // 5. Si admin actif, vérifier s'il y a une réponse admin
+        if ($conversation->admin_active) {
+            $adminMessage = Message::where('conversation_id', $conversation->id)
+                ->where('sender', 'admin')
+                ->where('created_at', '>', now()->subMinutes(1)) // Réponse récente
+                ->first();
+            if ($adminMessage) {
+                return response()->json(['reply' => $adminMessage->content]);
+            } else {
+                return response()->json(['reply' => "L'administrateur prépare sa réponse..."]);
+            }
+        }
+
+        // 6. Sinon, appel IA
         $apiKey = env('GOOGLE_AI_KEY');
 
         if (!$apiKey) {
             return response()->json(['reply' => "Erreur : Clé API manquante."], 500);
         }
 
-        // 2. Le Cerveau (Contexte du Festival)
+        // 7. Le Cerveau (Contexte du Festival)
         $systemPrompt = "
             RÔLE: Tu es l'assistant du Festival Cale Sons 2026.
             TON: Enthousiaste, concis et utile.
@@ -44,11 +88,12 @@ class ChatbotController extends Controller
               - Contacts et informations supplémentaires
             - Ne parle pas d'autres sujets.
             - Réponds en français.
+
+
         ";
 
         try {
-            // 3. Appel API avec le bon modèle (gemini-2.5-flash)
-            // On utilise v1beta car les versions 2.5+ sont souvent sur ce canal
+            // 8. Appel API
             $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={$apiKey}";
 
             $response = Http::withHeaders([
@@ -64,7 +109,6 @@ class ChatbotController extends Controller
                 ]
             ]);
 
-            // 4. Vérification des erreurs
             if ($response->failed()) {
                 Log::error('Erreur Google API', $response->json() ?? []);
                 return response()->json([
@@ -72,13 +116,19 @@ class ChatbotController extends Controller
                 ], 500);
             }
 
-            // 5. Récupération de la réponse
             $data = $response->json();
             $botReply = $data['candidates'][0]['content']['parts'][0]['text'] ?? null;
 
             if (!$botReply) {
-                return response()->json(['reply' => "Je n'ai pas compris, pouvez-vous reformuler ?"], 200);
+                $botReply = "Je n'ai pas compris, pouvez-vous reformuler ?";
             }
+
+            // 9. Stocker réponse bot
+            Message::create([
+                'conversation_id' => $conversation->id,
+                'sender' => 'bot',
+                'content' => $botReply,
+            ]);
 
             return response()->json(['reply' => $botReply]);
 
@@ -86,5 +136,18 @@ class ChatbotController extends Controller
             Log::error($e->getMessage());
             return response()->json(['reply' => "Erreur système."], 500);
         }
+    }
+
+    public function checkMessage(Request $request, $conversationId)
+    {
+        $conversation = Conversation::where('conversation_id', $conversationId)->first();
+        if (!$conversation || !$conversation->admin_active) {
+            return response()->json(['message' => null]);
+        }
+        $latestAdminMessage = Message::where('conversation_id', $conversation->id)
+            ->where('sender', 'admin')
+            ->latest()
+            ->first();
+        return response()->json(['message' => $latestAdminMessage ? $latestAdminMessage->content : null]);
     }
 }

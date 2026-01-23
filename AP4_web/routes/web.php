@@ -32,6 +32,9 @@ Route::get("/login-admin", function () {
 // Espace admin : dashboard protégé par le middleware is_admin
 Route::middleware(['auth', 'is_admin'])->group(function () {
     Route::get('/admin/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/admin/interventions', [\App\Http\Controllers\Admin\InterventionController::class, 'index'])->name('admin.interventions');
+    Route::get('/admin/interventions/{id}', [\App\Http\Controllers\Admin\InterventionController::class, 'show'])->name('admin.intervention.show');
+    Route::post('/admin/interventions/{id}/respond', [\App\Http\Controllers\Admin\InterventionController::class, 'respond'])->name('admin.intervention.respond');
 });
 
 Route::middleware('auth')->group(function () {
@@ -73,6 +76,8 @@ Route::get('/conditions-de-vente', [PageController::class, 'terms'])->name('term
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 
 Route::post('/chat/{conversationId}/send', [ChatbotController::class, 'sendMessage']);
+Route::get('/chat/{conversationId}/check', [ChatbotController::class, 'checkMessage']);
+Route::get('/chat/{conversationId}/messages', [ChatbotController::class, 'getMessages']);
 
 Route::get('/programme', [PageController::class, 'festival'])->name('programme');
 
