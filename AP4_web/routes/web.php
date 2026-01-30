@@ -46,7 +46,28 @@ Route::middleware('auth')->group(function () {
     Route::get('/mes-reservations', [ProfileController::class, 'ShowTicket'])->name('page.mes-reservations');
 }); // <-- cette accolade ferme le groupe auth
 
-// Ces routes sont accessibles SANS authentification :
+// Route temporaire pour tester les WebSockets
+Route::get('/test-websocket', function () {
+    return view('test-websocket');
+});
+
+// Dev helper: déclenche un message et broadcast pour tester en direct
+Route::get('/debug/ws-broadcast', function () {
+    $conversation = \App\Models\Conversation::firstOrCreate(
+        ['conversation_id' => 'conv_test_real'],
+        ['admin_active' => false]
+    );
+
+    $message = \App\Models\Message::create([
+        'conversation_id' => $conversation->id,
+        'sender' => 'user',
+        'content' => 'Message debug ' . now()->toDateTimeString(),
+    ]);
+
+    broadcast(new \App\Events\MessageSent($message));
+
+    return response()->json(['ok' => true, 'conversation' => $conversation->conversation_id]);
+});
 Route::get('/reservation/validation', [ReservationController::class, 'validerPaiement'])->name('reservation.validation');
 Route::get('/ticket/{idBillet}', [ReservationController::class, 'showTicket'])->name('page.ticket-reservation');
 Route::get('/billet/{idBillet}', [ReservationController::class, 'showTicket'])->name('reservation.success');

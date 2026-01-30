@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Conversation;
 use App\Models\Message;
+use App\Events\MessageSent;
 use Illuminate\Http\Request;
 
 class InterventionController extends Controller
@@ -24,12 +25,19 @@ class InterventionController extends Controller
     public function respond(Request $request, $id)
     {
         $request->validate(['message' => 'required|string']);
+
         $conversation = Conversation::findOrFail($id);
-        Message::create([
+
+        // Créer le message admin
+        $adminMessage = Message::create([
             'conversation_id' => $conversation->id,
             'sender' => 'admin',
             'content' => $request->message,
         ]);
-        return redirect()->back()->with('success', 'Réponse envoyée.');
+
+        // Diffuser le message en temps réel
+        broadcast(new MessageSent($adminMessage));
+
+        return response()->json(['success' => true, 'message' => 'Réponse envoyée.']);
     }
 }

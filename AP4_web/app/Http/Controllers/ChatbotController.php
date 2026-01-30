@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\Conversation;
 use App\Models\Message;
+use App\Events\MessageSent;
+use App\Events\AdminRequested;
 
 class ChatbotController extends Controller
 {
@@ -18,7 +20,7 @@ class ChatbotController extends Controller
             'conversationId' => 'required|string',
         ]);
 
-        $userMessage = $request->input('message');
+        $userMessageText = $request->input('message');
         $conversationId = $request->input('conversationId');
 
         // 2. Récupérer ou créer la conversation
@@ -28,21 +30,31 @@ class ChatbotController extends Controller
         );
 
         // 3. Stocker le message utilisateur
-        Message::create([
+        $userMessage = Message::create([
             'conversation_id' => $conversation->id,
             'sender' => 'user',
-            'content' => $userMessage,
+            'content' => $userMessageText,
         ]);
 
+        // Diffuser le message utilisateur
+        broadcast(new MessageSent($userMessage));
+
         // 4. Vérifier si demande d'humain
-        if (stripos($userMessage, 'humain') !== false || stripos($userMessage, 'admin') !== false || stripos($userMessage, 'parler à') !== false) {
+        if (stripos($userMessageText, 'humain') !== false || stripos($userMessageText, 'admin') !== false || stripos($userMessageText, 'parler à') !== false) {
             $conversation->update(['admin_active' => true]);
+
+            // Notifier les admins en temps réel
+            broadcast(new AdminRequested($conversation));
+
             // Stocker réponse automatique
-            Message::create([
+            $botMessage = Message::create([
                 'conversation_id' => $conversation->id,
                 'sender' => 'bot',
                 'content' => "Un administrateur va prendre le relais. Veuillez patienter.",
             ]);
+
+            // Diffuser le message bot
+            broadcast(new MessageSent($botMessage));
             return response()->json(['reply' => "Un administrateur va prendre le relais. Veuillez patienter."]);
         }
 
@@ -124,11 +136,14 @@ class ChatbotController extends Controller
             }
 
             // 9. Stocker réponse bot
-            Message::create([
+            $botMessage = Message::create([
                 'conversation_id' => $conversation->id,
                 'sender' => 'bot',
                 'content' => $botReply,
             ]);
+
+            // Diffuser le message bot
+            broadcast(new MessageSent($botMessage));
 
             return response()->json(['reply' => $botReply]);
 
@@ -136,6 +151,21 @@ class ChatbotController extends Controller
             Log::error($e->getMessage());
             return response()->json(['reply' => "Erreur système."], 500);
         }
+    }
+
+    public function getMessages($conversationId)
+    {
+        $conversation = Conversation::where('conversation_id', $conversationId)->first();
+
+        if (!$conversation) {
+            return response()->json(['messages' => []]);
+        }
+
+        $messages = $conversation->messages()
+            ->orderBy('created_at', 'asc')
+            ->get(['id', 'sender', 'content', 'created_at']);
+
+        return response()->json(['messages' => $messages]);
     }
 
     public function checkMessage(Request $request, $conversationId)
