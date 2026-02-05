@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12 bg-gray-50">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             
             @if($reservations->isEmpty())
@@ -21,8 +21,11 @@
                             <div class="bg-blue-900 p-4 flex items-center justify-center md:w-1/4">
                                 @if($resa->billet && $resa->billet->QRCODEBILLET)
                                     <div class="bg-white p-2 rounded">
-                                        {!! QrCode::size(80)->generate($resa->billet->QRCODEBILLET) !!}
-                                    </div>
+                        @if(class_exists(\SimpleSoftwareIO\QrCode\Facades\QrCode::class) && $resa->billet && $resa->billet->QRCODEBILLET)
+                            {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(120)->generate($resa->billet->QRCODEBILLET) !!}
+                        @else
+                            <div class="text-xs text-gray-500">QR unavailable</div>
+                        @endif                                    </div>
                                 @else
                                     <span class="text-white text-xs text-center">En attente<br>de paiement</span>
                                 @endif
@@ -32,10 +35,10 @@
                                 <div>
                                     <div class="flex justify-between items-start">
                                         <h3 class="text-xl font-bold text-gray-900">{{ $resa->manifestation->NOMMANIF }}</h3>
-                                        @if($resa->billet && $resa->billet->IDTYPEPAIEMENT)
-                                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-bold">PAYÉ</span>
+                                        @if($resa->billet && ($resa->billet->IDTYPEPAIEMENT == 1 || $resa->billet->IDTYPEPAIEMENT == 0))
+                                            <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-bold">✅ PAYÉ</span>
                                         @else
-                                            <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-bold">EN ATTENTE</span>
+                                            <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full font-bold">⏳ EN ATTENTE</span>
                                         @endif
                                     </div>
                                     <p class="text-gray-500 text-sm mt-1">

@@ -75,7 +75,20 @@ class ChatbotController extends Controller
         $apiKey = env('GOOGLE_AI_KEY');
 
         if (!$apiKey) {
-            return response()->json(['reply' => "Erreur : Clé API manquante."], 500);
+            Log::warning('GOOGLE_AI_KEY manquante — utilisation d\'un fallback de test pour le debug');
+
+            $botReply = "Réponse de test : clé AI manquante. (Mode démo)";
+
+            $botMessage = Message::create([
+                'conversation_id' => $conversation->id,
+                'sender' => 'bot',
+                'content' => $botReply,
+            ]);
+
+            // Diffuser le message bot pour tester le flux WebSocket même sans clé
+            broadcast(new MessageSent($botMessage));
+
+            return response()->json(['reply' => $botReply]);
         }
 
         // 7. Le Cerveau (Contexte du Festival)

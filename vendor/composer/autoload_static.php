@@ -73,6 +73,7 @@ class ComposerStaticInitde81f366255d0f7935d337bc0e5c42e9
             'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Component\\Clock\\' => 24,
             'Stripe\\' => 7,
+            'SimpleSoftwareIO\\QrCode\\' => 24,
         ),
         'R' =>
         array (
@@ -134,6 +135,7 @@ class ComposerStaticInitde81f366255d0f7935d337bc0e5c42e9
         'D' =>
         array (
             'Doctrine\\Inflector\\' => 19,
+            'DASPRiD\\Enum\\' => 13,
         ),
         'C' =>
         array (
@@ -141,6 +143,10 @@ class ComposerStaticInitde81f366255d0f7935d337bc0e5c42e9
             'Clue\\React\\Redis\\' => 17,
             'Carbon\\Doctrine\\' => 16,
             'Carbon\\' => 7,
+        ),
+        'B' =>
+        array (
+            'BaconQrCode\\' => 12,
         ),
     );
 
@@ -252,6 +258,10 @@ class ComposerStaticInitde81f366255d0f7935d337bc0e5c42e9
         'Stripe\\' =>
         array (
             0 => __DIR__ . '/..' . '/stripe/stripe-php/lib',
+        ),
+        'SimpleSoftwareIO\\QrCode\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/simplesoftwareio/simple-qrcode/src',
         ),
         'React\\Stream\\' =>
         array (
@@ -406,6 +416,10 @@ class ComposerStaticInitde81f366255d0f7935d337bc0e5c42e9
         array (
             0 => __DIR__ . '/..' . '/doctrine/inflector/src',
         ),
+        'DASPRiD\\Enum\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/dasprid/enum/src',
+        ),
         'Clue\\Redis\\Protocol\\' =>
         array (
             0 => __DIR__ . '/..' . '/clue/redis-protocol/src',
@@ -421,6 +435,10 @@ class ComposerStaticInitde81f366255d0f7935d337bc0e5c42e9
         'Carbon\\' =>
         array (
             0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
+        ),
+        'BaconQrCode\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/bacon/bacon-qr-code/src',
         ),
     );
 

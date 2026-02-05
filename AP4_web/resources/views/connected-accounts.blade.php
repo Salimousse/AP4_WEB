@@ -1,11 +1,11 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-festival-dark leading-tight">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Comptes associés') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12 bg-gray-50">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             
             <!-- Messages Flash -->
@@ -24,8 +24,8 @@
             @endif
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-festival-dark">
-                    <h3 class="text-lg font-medium text-festival-dark mb-4">Gérer vos connexions externes</h3>
+                <div class="p-6 text-gray-900">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">Gérer vos connexions externes</h3>
 
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center">
@@ -36,9 +36,9 @@
                                 <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
                             </svg>
                             <div>
-                                <span class="text-festival-dark font-medium">Google</span>
+                                <span class="text-gray-900 font-medium">Google</span>
                                 @if(Auth::user()->google_email)
-                                    <div class="text-xs text-festival-dark/70 mt-0.5">{{ Auth::user()->google_email }}</div>
+                                    <div class="text-xs text-gray-600 mt-0.5">{{ Auth::user()->google_email }}</div>
                                 @endif
                             </div>
                         </div>
@@ -57,7 +57,7 @@
                                 </form>
                             </div>
                         @else
-                            <a href="{{ route('google-auth') }}" class="inline-flex items-center px-4 py-2 bg-white border border-festival-dark/20 rounded-md font-semibold text-xs text-festival-dark uppercase tracking-widest shadow-sm hover:bg-festival-light focus:outline-none focus:ring-2 focus:ring-festival-primary focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
+                            <a href="{{ route('google-auth') }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
                                 Lier mon compte
                             </a>
                         @endif
@@ -72,9 +72,9 @@
                                 <path fill="#ffba08" d="M12 12h10v10H12z"/>
                             </svg>
                             <div>
-                                <span class="text-festival-dark font-medium">Microsoft</span>
+                                <span class="text-gray-900 font-medium">Microsoft</span>
                                 @if(Auth::user()->microsoft_email)
-                                    <div class="text-xs text-festival-dark/70 mt-0.5">{{ Auth::user()->microsoft_email }}</div>
+                                    <div class="text-xs text-gray-600 mt-0.5">{{ Auth::user()->microsoft_email }}</div>
                                 @endif
                             </div>
                         </div>
@@ -93,7 +93,7 @@
                                 </form>
                             </div>
                         @else
-                            <a href="{{ route('auth.microsoft') }}" class="inline-flex items-center px-4 py-2 bg-white border border-festival-dark/20 rounded-md font-semibold text-xs text-festival-dark uppercase tracking-widest shadow-sm hover:bg-festival-light focus:outline-none focus:ring-2 focus:ring-festival-primary focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
+                            <a href="{{ route('auth.microsoft') }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
                                 Lier mon compte
                             </a>
                         @endif

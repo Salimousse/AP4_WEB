@@ -5,7 +5,8 @@
         </h2>
     </x-slot>
 
-    <div class="py-12 flex justify-center items-center min-h-screen bg-gray-100">
+    <div class="py-12 bg-gray-100">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 flex justify-center">
         
         <div class="bg-white w-full max-w-4xl shadow-2xl rounded-xl overflow-hidden flex flex-col md:flex-row border border-gray-200">
             
@@ -19,7 +20,11 @@
 
                 <div class="flex flex-col items-center justify-center my-8 z-10">
                     <div class="bg-white p-4 rounded-lg shadow-lg">
-                        {!! QrCode::size(200)->generate($billet->QRCODEBILLET) !!}
+                        @if(class_exists(\SimpleSoftwareIO\QrCode\Facades\QrCode::class) && isset($billet) && $billet->QRCODEBILLET)
+                            {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::size(200)->generate($billet->QRCODEBILLET) !!}
+                        @else
+                            <div class="text-xs text-gray-500">QR unavailable</div>
+                        @endif
                     </div>
                     <p class="mt-2 text-xs text-blue-300 font-mono">Ref: {{ substr($billet->QRCODEBILLET, 0, 8) }}...</p>
                 </div>
@@ -55,13 +60,17 @@
 
                     <div>
                         <p class="text-gray-400 text-xs uppercase font-bold">Statut</p>
-                        @if($billet->IDTYPEPAIEMENT)
+                        @if($billet->IDTYPEPAIEMENT == 1)
                             <span class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold border border-green-200">
                                 ✅ PAYÉ (CB)
                             </span>
+                        @elseif($billet->IDTYPEPAIEMENT == 0)
+                            <span class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold border border-green-200">
+                                ✅ PAYÉ (Gratuit)
+                            </span>
                         @else
-                            <span class="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold border border-blue-200">
-                                🎁 OFFERT
+                            <span class="inline-block bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold border border-yellow-200">
+                                ⏳ EN ATTENTE
                             </span>
                         @endif
                     </div>
@@ -77,6 +86,7 @@
                     </a>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 </x-app-layout>

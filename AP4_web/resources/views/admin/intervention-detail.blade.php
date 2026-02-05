@@ -6,6 +6,7 @@
     <title>Détail Conversation - {{ substr($conversation->conversation_id, -8) }}</title>
     <script src="https://js.pusherapp.com/8.2/pusher.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @if (file_exists(public_path('build/manifest.json')))
         @vite(['resources/js/app.js', 'resources/js/chat-realtime.js'])
     @else
@@ -95,7 +96,8 @@
                 setupRealtime() {
                     // Écouter les nouveaux messages pour cette conversation
                     if (window.Echo) {
-                        window.Echo.private(`conversation.${this.conversationId}`)
+                        // Use public channel as the event is broadcast on a public channel.
+                        window.Echo.channel(`conversation.${this.conversationId}`)
                             .listen('.message.sent', (event) => {
                                 console.log('Nouveau message dans la conversation:', event);
                                 this.addMessage(event);

@@ -32,10 +32,11 @@ class MessageSent implements ShouldBroadcast
      */
     public function broadcastOn(): array
     {
-        // Use the conversation's external id (conversation_id) so it matches the
-        // client subscription key stored in localStorage (e.g. "conv_...").
+        // Use a public channel for conversation so unauthenticated users (chat widget)
+        // can subscribe without needing auth. If you want to restrict access, use
+        // PrivateChannel and ensure clients are authenticated.
         return [
-            new PrivateChannel('conversation.' . $this->message->conversation->conversation_id),
+            new Channel('conversation.' . $this->message->conversation->conversation_id),
         ];
     }
 

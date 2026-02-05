@@ -75,28 +75,41 @@
 
             setupRealtime() {
                 // Écouter les messages temps réel pour cette conversation
-                if (window.Echo) {
-                    window.Echo.private(`conversation.${this.conversationId}`)
-                        .listen('.message.sent', (event) => {
-                            console.log('Nouveau message temps réel:', event);
-
-                            // Éviter les doublons
-                            const exists = this.messages.some(msg => msg.id === event.id);
-                            if (!exists) {
-                                this.messages.push({
-                                    id: event.id,
-                                    sender: event.sender,
-                                    content: event.content
-                                });
-                                this.scrollToBottom();
-
-                                // Si c'est un message admin, arrêter le polling
-                                if (event.sender === 'admin') {
-                                    this.stopPolling();
-                                }
-                            }
-                        });
+                if (!window.Echo) {
+                    console.error('Echo non disponible — vérifie que le JS de WebSocket est chargé');
+                    return;
                 }
+
+                console.log('Configuration WebSocket pour : conversation.' + this.conversationId);
+
+                // Use public channel for conversation so unauthenticated chat users receive messages
+                window.Echo.channel(`conversation.${this.conversationId}`)
+                    .listen('.message.sent', (event) => {
+                        console.log('✓ Message WebSocket reçu:', event);
+
+                        // Éviter les doublons
+                        const exists = this.messages.some(msg => msg.id === event.id);
+                        if (!exists) {
+                            this.messages.push({
+                                id: event.id,
+                                sender: event.sender,
+                                content: event.content
+                            });
+                            this.scrollToBottom();
+
+                            // Si c'est un message admin, arrêter le polling
+                            if (event.sender === 'admin') {
+                                this.stopPolling();
+                            }
+                        } else {
+                            console.log('Message déjà présent, ignoré');
+                        }
+                    })
+                    .error((error) => {
+                        console.error('Erreur WebSocket sur le canal conversation.' + this.conversationId + ':', error);
+                    });
+
+                console.log('✓ Écouteur WebSocket configuré pour', this.conversationId);
             },
 
             loadMessages() {
@@ -155,19 +168,14 @@
 
                 axios.post(`/chat/${this.conversationId}/send`, { message: userMsg, conversationId: this.conversationId })
                     .then(res => {
-                        // Le message bot arrivera via WebSocket, pas besoin de l'ajouter ici
-                        // Mais on garde comme fallback
-                        setTimeout(() => {
-                            if (!this.messages.some(msg => msg.content === res.data.reply && msg.sender === 'bot')) {
-                                this.messages.push({ id: Date.now() + 1, sender: 'bot', content: res.data.reply });
-                                this.scrollToBottom();
-                            }
-                        }, 1000); // Délai pour laisser WebSocket arriver en premier
+                        // Le message de bot doit arriver via WebSocket; ne pas l'ajouter ici pour éviter les doublons
+                        console.log('Message envoyé au serveur, en attente de la diffusion WebSocket...');
                     })
                     .catch(err => {
+                        console.error('Erreur envoi message:', err);
+                        // Afficher un message d'erreur local si l'envoi échoue
                         this.messages.push({ id: Date.now(), sender: 'bot', content: "Je ne peux pas répondre pour l'instant." });
-                    })
-                    .finally(() => {
+                        this.scrollToBottom();
                         this.isLoading = false;
                         this.scrollToBottom();
                     });

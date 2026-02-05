@@ -41,7 +41,9 @@ class ReservationController extends Controller
 
         // CAS 1 : C'est GRATUIT -> On enregistre tout de suite
         if ($manif->PRIXMANIF <= 0) {
-            return $this->creationFinale($dataReservation, null); // null = pas de paiement
+            $billet = $this->creationFinale($dataReservation, 0); // 0 = gratuit (considéré comme payé)
+            return redirect()->route('page.ticket-reservation', ['idBillet' => $billet->IDBILLET])
+                ->with('success', 'Réservation confirmée ! Voici votre billet.');
         }
 
         // CAS 2 : C'est PAYANT -> On envoie sur Stripe SANS enregistrer en BDD
@@ -72,7 +74,7 @@ class ReservationController extends Controller
 
     // 2. LE RETOUR DE STRIPE (C'est ICI qu'on enregistre en BDD)
     public function validerPaiement()
-{
+    {
         // On récupère les données temporaires
         $data = session('donnees_en_attente');
 
@@ -87,7 +89,7 @@ class ReservationController extends Controller
         // Redirige vers la page ticket-reservation (route page.ticket-reservation)
         return redirect()->route('page.ticket-reservation', ['idBillet' => $billet->IDBILLET])
             ->with('success', 'Paiement validé ! Voici votre billet.');
-}
+    }
 
     // FONCTION PRIVÉE : Pour éviter de copier-coller le code d'insertion
     private function creationFinale($data, $typePaiement)

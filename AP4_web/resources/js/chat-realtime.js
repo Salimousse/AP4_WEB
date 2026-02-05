@@ -4,7 +4,7 @@
 // Écouter les nouveaux messages pour une conversation spécifique
 function listenToConversation(conversationId) {
     // S'abonner au canal de la conversation
-    window.Echo.private(`conversation.${conversationId}`)
+    window.Echo.channel(`conversation.${conversationId}`)
         .listen('.message.sent', (event) => {
             console.log('Nouveau message reçu:', event);
 

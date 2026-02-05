@@ -44,7 +44,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/reservation/{idManif}', [ReservationController::class, 'showForm'])->name('reservation.create');
     Route::post('/reservation', [ReservationController::class, 'store'])->name('reservation.store');
     Route::get('/mes-reservations', [ProfileController::class, 'ShowTicket'])->name('page.mes-reservations');
+    Route::get('/ticket/{idBillet}', [ReservationController::class, 'showTicket'])->name('page.ticket-reservation');
 }); // <-- cette accolade ferme le groupe auth
+
+// Route de validation Stripe (hors auth car Stripe redirige sans session)
+Route::get('/reservation/validation', [ReservationController::class, 'validerPaiement'])->middleware('auth')->name('reservation.validation');
 
 // Route temporaire pour tester les WebSockets
 Route::get('/test-websocket', function () {
@@ -68,8 +72,47 @@ Route::get('/debug/ws-broadcast', function () {
 
     return response()->json(['ok' => true, 'conversation' => $conversation->conversation_id]);
 });
-Route::get('/reservation/validation', [ReservationController::class, 'validerPaiement'])->name('reservation.validation');
-Route::get('/ticket/{idBillet}', [ReservationController::class, 'showTicket'])->name('page.ticket-reservation');
+
+// Dev helper: appeler le contrôleur de chat comme si un utilisateur envoyait un message (ignore CSRF)
+Route::get('/debug/send-message', function () {
+    $req = request()->merge(['message' => 'Message debug via route', 'conversationId' => 'test123']);
+    $controller = app(\App\Http\Controllers\ChatbotController::class);
+    return $controller->sendMessage($req);
+});
+
+// Dev helper: simuler une réponse admin (ignore auth/CSRF) pour un conversation_id externe
+Route::get('/debug/admin-respond/{conversationId}', function ($conversationId) {
+    $conversation = \App\Models\Conversation::where('conversation_id', $conversationId)->first();
+    if (! $conversation) return response()->json(['ok' => false, 'error' => 'Conversation introuvable'], 404);
+
+    $adminMessage = \App\Models\Message::create([
+        'conversation_id' => $conversation->id,
+        'sender' => 'admin',
+        'content' => 'Réponse admin debug ' . now()->toDateTimeString(),
+    ]);
+
+
+    broadcast(new \App\Events\MessageSent($adminMessage));
+
+    return response()->json(['ok' => true, 'conversation' => $conversationId]);
+});
+
+// Dev helper: lister les dernières conversations (id, conversation_id)
+Route::get('/debug/list-conversations', function () {
+    return response()->json(\App\Models\Conversation::orderBy('created_at', 'desc')->take(20)->get(['id','conversation_id','admin_active','created_at']));
+});
+
+// Dev helper: afficher une page ticket de test sans billet en base
+Route::get('/debug/show-ticket', function () {
+    $billet = (object) [
+        'QRCODEBILLET' => 'TEST-QRCODE-123456',
+        'client' => (object) ['NOMPERS' => 'Doe', 'PRENOMPERS' => 'John'],
+        'manifestation' => (object) ['NOMMANIF' => 'Concert Expo', 'PRIXMANIF' => 0]
+    ];
+
+    return view('pages.ticket-reservation', ['billet' => $billet]);
+});
+
 Route::get('/billet/{idBillet}', [ReservationController::class, 'showTicket'])->name('reservation.success');
 
 

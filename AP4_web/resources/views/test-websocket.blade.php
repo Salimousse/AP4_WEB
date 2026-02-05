@@ -58,8 +58,8 @@
             if (window.Echo) {
                 statusDiv.innerHTML = 'Echo disponible ✓';
 
-                // Tester la conversation
-                window.Echo.private('conversation.test123')
+                // Tester la conversation (public channel)
+                window.Echo.channel('conversation.test123')
                     .listen('.message.sent', (event) => {
                         conversationLog.innerHTML += `<div class="mb-2 p-2 bg-blue-100 rounded">
                             <strong>${event.sender}:</strong> ${event.content}

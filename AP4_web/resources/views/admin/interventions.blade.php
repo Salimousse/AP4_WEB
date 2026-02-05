@@ -6,6 +6,7 @@
     <title>Interventions Chatbot</title>
     <script src="https://js.pusherapp.com/8.2/pusher.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @if (file_exists(public_path('build/manifest.json')))
         @vite(['resources/js/app.js', 'resources/js/admin-realtime.js'])
     @else

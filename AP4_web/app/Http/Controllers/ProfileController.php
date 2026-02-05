@@ -68,7 +68,8 @@ class ProfileController extends Controller
         // 2. On cherche sa fiche Client via l'email
         $client = Client::where('MAILCLIENT', $user->email)->first();
 
-        $reservations = [];
+        // CORRECTION : initialiser en tant que Collection pour que ->isEmpty() fonctionne en Blade
+        $reservations = collect();
 
         if ($client) {
             // 3. On récupère ses réservations avec les infos du Billet et de la Manif
