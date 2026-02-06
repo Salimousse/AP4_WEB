@@ -67,12 +67,23 @@ class Client extends Authenticatable
 	// Accesseurs pour compatibilité Laravel Auth
 	public function getAuthIdentifierName()
 	{
-		return 'MAILCLIENT';
+		return 'IDPERS';
 	}
 
 	public function getAuthPassword()
 	{
 		return $this->password;
+	}
+
+	// Spécifier le champ utilisé pour l'username (email)
+	public function username()
+	{
+		return 'MAILCLIENT';
+	}
+
+	public function findForPassport($username)
+	{
+		return $this->where('MAILCLIENT', $username)->first();
 	}
 
 	// Attributs virtuels pour compatibilité
