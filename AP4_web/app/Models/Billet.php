@@ -39,7 +39,6 @@ class Billet extends Model
 	protected $casts = [
 		'IDSPONSORS' => 'int',
 		'IDRESERVATION' => 'int',
-		'IDTYPEPAIEMENT' => 'int',
 		'IDMANIF' => 'int',
 		'IDPERS' => 'int',
 		'INVITEBILLET' => 'bool'

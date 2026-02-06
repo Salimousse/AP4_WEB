@@ -41,7 +41,7 @@ class ReservationController extends Controller
 
         // CAS 1 : C'est GRATUIT -> On enregistre tout de suite
         if ($manif->PRIXMANIF <= 0) {
-            $billet = $this->creationFinale($dataReservation, 0); // 0 = gratuit (considéré comme payé)
+            $billet = $this->creationFinale($dataReservation, null); // null = gratuit (pas de type de paiement)
             return redirect()->route('page.ticket-reservation', ['idBillet' => $billet->IDBILLET])
                 ->with('success', 'Réservation confirmée ! Voici votre billet.');
         }
@@ -50,6 +50,9 @@ class ReservationController extends Controller
         
         // On sauvegarde les infos dans la SESSION (mémoire temporaire)
         session(['donnees_en_attente' => $dataReservation]);
+
+        // On encode aussi les données dans l'URL comme backup
+        $encodedData = base64_encode(json_encode($dataReservation));
 
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
@@ -64,31 +67,51 @@ class ReservationController extends Controller
                 'quantity' => 1,
             ]],
             'mode' => 'payment',
-            // IMPORTANT : On redirige vers notre nouvelle route de validation
-            'success_url' => route('reservation.validation'),
-            'cancel_url' => route('programme'),
+            // IMPORTANT : On redirige vers notre nouvelle route de validation avec les données
+            'success_url' => route('reservation.validation') . '?data=' . $encodedData,
+            'cancel_url' => route('festivals'),
         ]);
 
         return redirect($session->url);
     }
 
     // 2. LE RETOUR DE STRIPE (C'est ICI qu'on enregistre en BDD)
-    public function validerPaiement()
+    public function validerPaiement(Request $request)
     {
-        // On récupère les données temporaires
-        $data = session('donnees_en_attente');
-
-        // Sécurité : Si pas de données en session (ex: accès direct à l'url), on jette
+        // On essaie d'abord de récupérer depuis l'URL
+        $data = null;
+        
+        if ($request->has('data')) {
+            try {
+                $data = json_decode(base64_decode($request->get('data')), true);
+            } catch (\Exception $e) {
+                // Si décodage échoue, on essaie la session
+            }
+        }
+        
+        // Fallback : on essaie la session
         if (!$data) {
-            return redirect()->route('programme')->with('error', 'Aucune réservation en attente.');
+            $data = session('donnees_en_attente');
+        }
+
+        // Sécurité : Si pas de données du tout, on redirige
+        if (!$data) {
+            return redirect()->route('festivals')->with('error', 'Aucune réservation en attente.');
         }
 
         // On lance la création réelle en BDD (IDTYPEPAIEMENT = 1 pour CB)
         $billet = $this->creationFinale($data, 1);
 
-        // Redirige vers la page ticket-reservation (route page.ticket-reservation)
-        return redirect()->route('page.ticket-reservation', ['idBillet' => $billet->IDBILLET])
-            ->with('success', 'Paiement validé ! Voici votre billet.');
+        // Récupérer les infos complètes pour affichage
+        $manifestation = Manifestations::find($billet->IDMANIF);
+        $festival = Festival::find($manifestation->IDFESTIVAL);
+
+        // Afficher la page de validation avec toutes les infos
+        return view('pages.validation-reservation', [
+            'billet' => $billet,
+            'manifestation' => $manifestation,
+            'festival' => $festival
+        ]);
     }
 
     // FONCTION PRIVÉE : Pour éviter de copier-coller le code d'insertion
@@ -114,7 +137,7 @@ class ReservationController extends Controller
 
         // 3. Billet
         $billet = Billet::create([
-            'IDSPONSORS' => rand(1, 11), // Ton système aléatoire de sponsors
+            'IDSPONSORS' => rand(1, 8), // Tu as 8 sponsors dans ta base
             'IDRESERVATION' => $reservation->IDRESERVATION,
             'IDMANIF' => $data['id_manif'],
             'IDPERS' => $client->IDPERS,

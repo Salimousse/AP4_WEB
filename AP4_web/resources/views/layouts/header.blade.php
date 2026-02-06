@@ -5,7 +5,7 @@
             <nav class="flex items-center gap-8">
                 <a href="{{ route('contact') }}" class="text-festival-dark hover:text-festival-primary transition font-medium">Contact</a>
                 <a href="{{ route('about') }}" class="text-festival-dark hover:text-festival-primary transition font-medium">À propos</a>
-                <a href="{{ route('programme') }}" class="text-festival-dark hover:text-festival-primary transition font-medium">Programme des festivals</a>
+                <a href="{{ route('festivals') }}" class="text-festival-dark hover:text-festival-primary transition font-medium">Programme des festivals</a>
                 @auth
                     <div class="relative">
                         <button @click="open = !open" type="button" class="flex items-center gap-2 text-festival-dark hover:text-festival-primary transition font-medium">

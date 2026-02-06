@@ -6,10 +6,28 @@ use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
-    public function festival()
+    // Liste de tous les festivals
+    public function festivals()
     {
-        $festival = \App\Models\Festival::with('manifestations')->first();
-        return view('pages.page-festival', compact('festival'));
+        $festivals = \App\Models\Festival::all();
+        return view('pages.festivals', compact('festivals'));
+    }
+
+    // Programme d'un festival spécifique
+    public function festival($id)
+    {
+        $festival = \App\Models\Festival::with([
+            'manifestations.concert',
+            'manifestations.conference',
+            'manifestations.atelier'
+        ])->findOrFail($id);
+        
+        // Séparer les manifestations par type
+        $concerts = $festival->manifestations->filter(fn($m) => $m->concert !== null);
+        $conferences = $festival->manifestations->filter(fn($m) => $m->conference !== null);
+        $ateliers = $festival->manifestations->filter(fn($m) => $m->atelier !== null);
+        
+        return view('pages.page-festival', compact('festival', 'concerts', 'conferences', 'ateliers'));
     }
 
     public function about()

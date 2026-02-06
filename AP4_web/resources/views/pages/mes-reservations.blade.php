@@ -11,7 +11,7 @@
             @if($reservations->isEmpty())
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 text-center">
                     <p class="text-gray-500 mb-4">Vous n'avez aucune réservation pour le moment.</p>
-                    <a href="{{ route('programme') }}" class="text-blue-600 hover:underline font-bold">Voir la programmation</a>
+                    <a href="{{ route('festivals') }}" class="text-blue-600 hover:underline font-bold">Voir la programmation</a>
                 </div>
             @else
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

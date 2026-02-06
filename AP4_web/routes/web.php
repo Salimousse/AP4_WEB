@@ -48,7 +48,7 @@ Route::middleware('auth')->group(function () {
 }); // <-- cette accolade ferme le groupe auth
 
 // Route de validation Stripe (hors auth car Stripe redirige sans session)
-Route::get('/reservation/validation', [ReservationController::class, 'validerPaiement'])->middleware('auth')->name('reservation.validation');
+Route::get('/reservation/validation', [ReservationController::class, 'validerPaiement'])->name('reservation.validation');
 
 // Route temporaire pour tester les WebSockets
 Route::get('/test-websocket', function () {
@@ -143,7 +143,8 @@ Route::post('/chat/{conversationId}/send', [ChatbotController::class, 'sendMessa
 Route::get('/chat/{conversationId}/check', [ChatbotController::class, 'checkMessage']);
 Route::get('/chat/{conversationId}/messages', [ChatbotController::class, 'getMessages']);
 
-Route::get('/programme', [PageController::class, 'festival'])->name('programme');
+Route::get('/festivals', [PageController::class, 'festivals'])->name('festivals');
+Route::get('/programme/{id}', [PageController::class, 'festival'])->name('programme');
 
 
 
