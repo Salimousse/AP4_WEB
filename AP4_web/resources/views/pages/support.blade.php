@@ -136,6 +136,18 @@
                                     if (!response.ok) {
                                         throw new Error('Erreur réseau');
                                     }
+
+                                    const data = await response.json();
+                                    if (data.reply) {
+                                        const exists = this.messages.some(m => m.content === data.reply && m.sender === 'bot');
+                                        if (!exists) {
+                                            this.messages.push({
+                                                id: Date.now(),
+                                                sender: 'bot',
+                                                content: data.reply
+                                            });
+                                        }
+                                    }
                                 } catch (error) {
                                     console.error('Erreur envoi:', error);
                                     this.messages.push({
@@ -174,7 +186,7 @@
 
                                 window.Echo.channel(`conversation.${this.conversationId}`)
                                     .listen('.message.sent', (event) => {
-                                        const exists = this.messages.some(msg => msg.id === event.id);
+                                        const exists = this.messages.some(msg => msg.id === event.id || (msg.content === event.content && msg.sender === event.sender));
                                         if (!exists) {
                                             this.messages.push({
                                                 id: event.id,

@@ -87,8 +87,8 @@
                     .listen('.message.sent', (event) => {
                         console.log('✓ Message WebSocket reçu:', event);
 
-                        // Éviter les doublons
-                        const exists = this.messages.some(msg => msg.id === event.id);
+                        // Éviter les doublons (par id OU par contenu+sender)
+                        const exists = this.messages.some(msg => msg.id === event.id || (msg.content === event.content && msg.sender === event.sender));
                         if (!exists) {
                             this.messages.push({
                                 id: event.id,
@@ -168,14 +168,19 @@
 
                 axios.post(`/chat/${this.conversationId}/send`, { message: userMsg, conversationId: this.conversationId })
                     .then(res => {
-                        // Le message de bot doit arriver via WebSocket; ne pas l'ajouter ici pour éviter les doublons
-                        console.log('Message envoyé au serveur, en attente de la diffusion WebSocket...');
+                        // Afficher la réponse bot directement depuis la réponse HTTP
+                        if (res.data.reply) {
+                            const exists = this.messages.some(m => m.content === res.data.reply && m.sender === 'bot');
+                            if (!exists) {
+                                this.messages.push({ id: Date.now(), sender: 'bot', content: res.data.reply });
+                                this.scrollToBottom();
+                            }
+                        }
+                        this.isLoading = false;
                     })
                     .catch(err => {
                         console.error('Erreur envoi message:', err);
-                        // Afficher un message d'erreur local si l'envoi échoue
                         this.messages.push({ id: Date.now(), sender: 'bot', content: "Je ne peux pas répondre pour l'instant." });
-                        this.scrollToBottom();
                         this.isLoading = false;
                         this.scrollToBottom();
                     });
