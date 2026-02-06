@@ -37,6 +37,10 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
     Route::post('/admin/interventions/{id}/respond', [\App\Http\Controllers\Admin\InterventionController::class, 'respond'])->name('admin.intervention.respond');
 });
 
+// Route de validation Stripe (hors auth car Stripe redirige sans session)
+// IMPORTANT : AVANT le groupe auth pour éviter le conflit avec /reservation/{idManif}
+Route::get('/reservation/validation', [ReservationController::class, 'validerPaiement'])->name('reservation.validation');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -47,8 +51,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/ticket/{idBillet}', [ReservationController::class, 'showTicket'])->name('page.ticket-reservation');
 }); // <-- cette accolade ferme le groupe auth
 
-// Route de validation Stripe (hors auth car Stripe redirige sans session)
-Route::get('/reservation/validation', [ReservationController::class, 'validerPaiement'])->name('reservation.validation');
+// Route de debug pour tester la validation
+Route::get('/debug-validation', function () {
+    $testData = base64_decode('eyJlbWFpbF91c2VyIjoic2V0dG91dGlzYWxpbUBnbWFpbC5jb20iLCJub21fdXNlciI6InNhbGltIiwidGVsZXBob25lIjoiMDAwMDAwMDAwMCIsImlkX21hbmlmIjoxLCJwcml4IjozNX0');
+    dd(json_decode($testData, true));
+});
 
 // Route temporaire pour tester les WebSockets
 Route::get('/test-websocket', function () {

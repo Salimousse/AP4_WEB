@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
-use App\Models\Manifestation;
-use App\Models\Client;
-use App\Models\Reservation;
-use App\Models\Billet;
+use Log;
 use Stripe\Stripe;
+use App\Models\Billet;
+use App\Models\Client;
+use App\Models\Festival;
+use App\Models\Reservation;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Stripe\Checkout\Session;
+use App\Models\Manifestation;
+use Illuminate\Support\Facades\Auth;
+
 
 class ReservationController extends Controller
 {
@@ -41,8 +44,8 @@ class ReservationController extends Controller
 
         // CAS 1 : C'est GRATUIT -> On enregistre tout de suite
         if ($manif->PRIXMANIF <= 0) {
-            $billet = $this->creationFinale($dataReservation, null); // null = gratuit (pas de type de paiement)
-            return redirect()->route('page.ticket-reservation', ['idBillet' => $billet->IDBILLET])
+            $billet = $this->creationFinale($dataReservation, 2); // 2 = gratuit (considéré comme déjà payé)
+            return redirect()->route('reservation.success', ['idBillet' => $billet->IDBILLET])
                 ->with('success', 'Réservation confirmée ! Voici votre billet.');
         }
 
@@ -103,7 +106,7 @@ class ReservationController extends Controller
         $billet = $this->creationFinale($data, 1);
 
         // Récupérer les infos complètes pour affichage
-        $manifestation = Manifestations::find($billet->IDMANIF);
+        $manifestation = Manifestation::find($billet->IDMANIF);
         $festival = Festival::find($manifestation->IDFESTIVAL);
 
         // Afficher la page de validation avec toutes les infos

@@ -88,7 +88,7 @@
 
             <!-- Actions -->
             <div class="mt-8 pt-6 border-t border-gray-200 flex flex-col md:flex-row gap-4">
-                <a href="{{ route('page.ticket-reservation', ['idBillet' => $billet->IDBILLET]) }}" 
+                <a href="{{ route('reservation.success', ['idBillet' => $billet->IDBILLET]) }}" 
                    class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg text-center transition duration-200 shadow-lg hover:shadow-xl">
                     🎫 Voir mon billet complet
                 </a>
