@@ -70,5 +70,12 @@
                 <span class="text-sm font-semibold">Connexion administrateur</span>
             </a>
         </div>
+
+        <div class="text-center mt-4 pt-4 border-t border-festival-dark/10">
+            <p class="text-sm text-festival-dark/70">Pas encore inscrit ?</p>
+            <a href="{{ route('register') }}" class="mt-2 inline-flex items-center px-4 py-2 bg-festival-secondary text-white text-sm font-medium rounded-lg hover:bg-festival-primary transition-colors duration-200">
+                Créer un compte
+            </a>
+        </div>
     </form>
 </x-guest-layout>

@@ -5,6 +5,7 @@
             <nav class="flex items-center gap-8">
                 <a href="{{ route('contact') }}" class="text-festival-dark hover:text-festival-primary transition font-medium">Contact</a>
                 <a href="{{ route('about') }}" class="text-festival-dark hover:text-festival-primary transition font-medium">À propos</a>
+                <a href="{{ route('support') }}" class="text-festival-dark hover:text-festival-primary transition font-medium">Assistance</a>
                 <a href="{{ route('festivals') }}" class="text-festival-dark hover:text-festival-primary transition font-medium">Programme des festivals</a>
                 @auth
                     <div class="relative">

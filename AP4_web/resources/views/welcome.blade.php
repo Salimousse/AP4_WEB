@@ -72,7 +72,5 @@
 
     @include('layouts.footer')
 
-    <x-chatbot-widget />
-
 </body>
 </html>

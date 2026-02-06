@@ -159,8 +159,14 @@ class ReservationController extends Controller
     // ...
 public function showTicket($idBillet)
 {
-    // On charge le billet ET les infos liées (Client + Manif)
-    $billet = Billet::with(['client', 'manifestation'])->findOrFail($idBillet);
+    // On charge le billet avec TOUTES les infos liées
+    $billet = Billet::with([
+        'client',                          // Infos du client
+        'manifestation.festival',          // Manifestation + Festival
+        'reservation',                     // Infos de réservation  
+        'sponsor',                         // Sponsor du billet
+        'typepaiement'                     // Type de paiement (CB/Gratuit)
+    ])->findOrFail($idBillet);
 
     return view('pages.ticket-reservation', compact('billet'));
 }

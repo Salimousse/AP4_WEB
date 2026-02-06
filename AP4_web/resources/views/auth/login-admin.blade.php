@@ -1,4 +1,9 @@
 <x-guest-layout>
+    <!-- Titre pour la connexion admin -->
+    <div class="text-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Connexion Administrateur</h2>
+    </div>
+
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
@@ -42,7 +47,7 @@
 
         <div class="flex items-center justify-center mt-4">
             <x-primary-button>
-                Se connecter
+                Se connecter en tant qu'Admin
             </x-primary-button>
         </div>
 
@@ -66,6 +71,13 @@
             <a href="{{ route('auth.facebook') }}" class="flex items-center justify-center px-4 py-2 bg-white border border-festival-dark/20 rounded-lg shadow-sm hover:bg-festival-light">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg" alt="Facebook Logo" class="w-5 h-5 me-2">
                 <span class="text-sm font-medium text-festival-dark">Se connecter avec Facebook</span>
+            </a>
+        </div>
+
+        <div class="text-center mt-4 pt-4 border-t border-festival-dark/10">
+            <p class="text-sm text-festival-dark/70">Pas encore inscrit ?</p>
+            <a href="{{ route('register') }}" class="mt-2 inline-flex items-center px-4 py-2 bg-festival-secondary text-white text-sm font-medium rounded-lg hover:bg-festival-primary transition-colors duration-200">
+                Créer un compte
             </a>
         </div>
     </form>

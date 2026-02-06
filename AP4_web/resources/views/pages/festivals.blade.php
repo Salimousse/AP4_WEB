@@ -13,7 +13,13 @@
     <nav class="bg-white shadow-sm py-4">
         <div class="container mx-auto px-6 flex justify-between items-center">
             <a href="/" class="text-2xl font-bold text-blue-600">CALE SONS</a>
-            <a href="/" class="text-gray-600 hover:text-blue-600">Retour Accueil</a>
+            <div class="flex gap-4">
+                <a href="{{ route('support') }}" class="text-gray-600 hover:text-blue-600">Assistance</a>
+                @auth
+                    <a href="{{ route('page.mes-reservations') }}" class="text-gray-600 hover:text-blue-600">Mes Réservations</a>
+                @endauth
+                <a href="/" class="text-gray-600 hover:text-blue-600">Accueil</a>
+            </div>
         </div>
     </nav>
 
@@ -119,8 +125,6 @@
     <footer class="bg-gray-900 text-white py-8 text-center mt-16">
         <p>&copy; 2026 Festival Cale Sons. Tous droits réservés.</p>
     </footer>
-
-    <x-chatbot-widget />
 
 </body>
 </html>

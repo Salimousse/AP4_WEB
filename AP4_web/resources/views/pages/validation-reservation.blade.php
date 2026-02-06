@@ -14,6 +14,7 @@
         <div class="container mx-auto px-6 flex justify-between items-center">
             <a href="/" class="text-2xl font-bold text-blue-600">CALE SONS</a>
             <div class="flex gap-4">
+                <a href="{{ route('support') }}" class="text-gray-600 hover:text-blue-600">Assistance</a>
                 <a href="{{ route('festivals') }}" class="text-gray-600 hover:text-blue-600">Festivals</a>
                 <a href="{{ route('page.mes-reservations') }}" class="text-gray-600 hover:text-blue-600">Mes Réservations</a>
             </div>

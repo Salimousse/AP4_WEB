@@ -41,6 +41,9 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
 // IMPORTANT : AVANT le groupe auth pour éviter le conflit avec /reservation/{idManif}
 Route::get('/reservation/validation', [ReservationController::class, 'validerPaiement'])->name('reservation.validation');
 
+// API pour vérifier un billet via QR code
+Route::get('/api/verify-ticket/{token}', [ReservationController::class, 'verifyTicket'])->name('api.verify-ticket');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -141,6 +144,7 @@ Route::get('connect/facebook/check', [FacebookAuthController::class, 'callback']
 Route::delete('auth/facebook/unlink', [FacebookAuthController::class, 'unlink'])->name('auth.facebook.unlink');
 
 // Pages statiques
+Route::get('/assistance', [PageController::class, 'support'])->name('support');
 Route::get('/a-propos', [PageController::class, 'about'])->name('about');
 Route::get('/politique-de-confidentialite', [PageController::class, 'privacy'])->name('privacy');
 Route::get('/conditions-de-vente', [PageController::class, 'terms'])->name('terms');
