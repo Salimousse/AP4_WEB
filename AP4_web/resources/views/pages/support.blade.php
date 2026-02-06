@@ -130,7 +130,7 @@
                                             'Content-Type': 'application/json',
                                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                                         },
-                                        body: JSON.stringify({ message })
+                                        body: JSON.stringify({ message, conversationId: this.conversationId })
                                     });
 
                                     if (!response.ok) {

@@ -85,7 +85,9 @@ Route::get('/debug/ws-broadcast', function () {
 
 // Dev helper: appeler le contrôleur de chat comme si un utilisateur envoyait un message (ignore CSRF)
 Route::get('/debug/send-message', function () {
-    $req = request()->merge(['message' => 'Message debug via route', 'conversationId' => 'test123']);
+    $message = request('message', 'Message debug via route');
+    $conversationId = request('conversation', 'test123');
+    $req = request()->merge(['message' => $message, 'conversationId' => $conversationId]);
     $controller = app(\App\Http\Controllers\ChatbotController::class);
     return $controller->sendMessage($req);
 });

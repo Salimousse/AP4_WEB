@@ -12,7 +12,7 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    @if(Auth::user()->role !== 'admin')
+                    @if(!Auth::user()->is_admin)
                     <x-nav-link :href="url('/')" :active="request()->is('/')">
                         {{ __('Accueil') }}
                     </x-nav-link>
@@ -26,7 +26,7 @@
                         {{ __('Mes Réservations') }}
                     </x-nav-link>
                     @endif
-                    @if(Auth::user()->role === 'admin')
+                    @if(Auth::user()->is_admin)
                     <x-nav-link :href="route('admin.interventions')" :active="request()->routeIs('admin.interventions')">
                         {{ __('Interventions') }}
                     </x-nav-link>

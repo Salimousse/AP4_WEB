@@ -73,11 +73,26 @@ class ChatbotController extends Controller
 
         // 6. Sinon, appel IA
         $apiKey = env('GOOGLE_AI_KEY');
+        
+        Log::info('DEBUG ChatBot - API Key status: ' . ($apiKey ? 'PRÉSENTE' : 'MANQUANTE'));
+        Log::info('DEBUG ChatBot - API Key length: ' . ($apiKey ? strlen($apiKey) : 0));
 
         if (!$apiKey) {
             Log::warning('GOOGLE_AI_KEY manquante — utilisation d\'un fallback de test pour le debug');
 
-            $botReply = "Réponse de test : clé AI manquante. (Mode démo)";
+            // Réponses intelligentes en mode démo
+            $userLower = strtolower($userMessageText);
+            if (stripos($userLower, 'festival') !== false || stripos($userLower, 'dispo') !== false) {
+                $botReply = "🎵 **Festival Cale Sons 2026** 🎵\n\n📅 **Dates**: Août 2026\n🎭 **Thème**: 'Terres de Légendes'\n🎪 **Activités**: Concerts, Ateliers créatifs\n\nQue souhaitez-vous savoir de plus ? (tarifs, programmation, hébergement...)";
+            } elseif (stripos($userLower, 'tarif') !== false || stripos($userLower, 'prix') !== false || stripos($userLower, 'billet') !== false) {
+                $botReply = "💰 **Tarifs Festival 2026**\n\n🎫 Pass 1 jour: 45€\n🎟️ Pass 2 jours: 80€\n🌟 Pass VIP: 120€\n\n✨ Réductions étudiants disponibles !";
+            } elseif (stripos($userLower, 'programme') !== false || stripos($userLower, 'artiste') !== false || stripos($userLower, 'concert') !== false) {
+                $botReply = "🎤 **Programmation 2026**\n\n🌟 Têtes d'affiche à venir\n🎸 Scènes multiples\n🎶 Ambiance 'Terres de Légendes'\n\nLe programme complet sera dévoilé prochainement !";
+            } elseif (stripos($userLower, 'lieu') !== false || stripos($userLower, 'où') !== false || stripos($userLower, 'adresse') !== false) {
+                $botReply = "📍 **Localisation**\n\nLe festival se déroule dans un cadre exceptionnel.\n🚗 Parkings disponibles\n🚌 Navettes spéciales\n\nPlus d'infos sur l'accès bientôt !";
+            } else {
+                $botReply = "Bonjour ! 😊 Je suis l'assistant du Festival Cale Sons 2026.\n\nJe peux vous renseigner sur :\n🎵 Les festivals disponibles\n💰 Les tarifs\n📅 Les dates\n🎤 La programmation\n📍 L'accès\n\nQue souhaitez-vous savoir ?";
+            }
 
             $botMessage = Message::create([
                 'conversation_id' => $conversation->id,
@@ -128,7 +143,7 @@ class ChatbotController extends Controller
                     [
                         "role" => "user",
                         "parts" => [
-                            ["text" => $systemPrompt . "\n\n Question utilisateur : " . $userMessage]
+                            ["text" => $systemPrompt . "\n\n Question utilisateur : " . $userMessageText]
                         ]
                     ]
                 ]

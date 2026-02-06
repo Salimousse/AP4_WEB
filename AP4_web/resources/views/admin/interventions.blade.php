@@ -82,7 +82,7 @@
 
     <script>
         // Définir l'utilisateur actuel comme admin pour les WebSockets
-        window.currentUser = { role: 'admin' };
+        window.currentUser = { is_admin: true };
     </script>
 </body>
 </html>

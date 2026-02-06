@@ -186,7 +186,7 @@
         }
 
         // Définir l'utilisateur actuel comme admin
-        window.currentUser = { role: 'admin' };
+        window.currentUser = { is_admin: true };
     </script>
 </body>
 </html>
