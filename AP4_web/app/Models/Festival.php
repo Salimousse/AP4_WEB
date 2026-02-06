@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Festival extends Model
 {
-	protected $table = 'festival';
+	protected $table = 'FESTIVAL';
 	protected $primaryKey = 'IDFESTIVAL';
 	public $timestamps = false;
 

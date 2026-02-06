@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Domaine extends Model
 {
-	protected $table = 'domaine';
+	protected $table = 'DOMAINE';
 	protected $primaryKey = 'IDDOMAINE';
 	public $timestamps = false;
 

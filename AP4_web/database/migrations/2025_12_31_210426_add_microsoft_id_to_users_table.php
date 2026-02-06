@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
 {
-    Schema::table('users', function (Blueprint $table) {
+    Schema::table('CLIENT', function (Blueprint $table) {
         // On ajoute la colonne après google_id
         $table->string('microsoft_id')->nullable()->after('google_id');
     });
@@ -19,7 +19,7 @@ return new class extends Migration
 
 public function down(): void
 {
-    Schema::table('users', function (Blueprint $table) {
+    Schema::table('CLIENT', function (Blueprint $table) {
         $table->dropColumn('microsoft_id');
     });
 }

@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Produire extends Model
 {
-	protected $table = 'produire';
+	protected $table = 'PRODUIRE';
 	public $incrementing = false;
 	public $timestamps = false;
 

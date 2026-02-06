@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Exception;
-use App\Models\User;
+use App\Models\Client;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
@@ -24,13 +24,13 @@ class GoogleAuthController extends Controller
 
             // CAS 1 : L'utilisateur est DÉJÀ connecté -> On lie le compte
             if (Auth::check()) {
-                /** @var User $currentUser */
+                /** @var Client $currentUser */
                 $currentUser = Auth::user();
                 
                 // Vérifier si ce compte Google est déjà utilisé par quelqu'un d'autre
-                $existingAccount = User::where('google_id', $google_user->getId())->first();
+                $existingAccount = Client::where('google_id', $google_user->getId())->first();
                 
-                if ($existingAccount && $existingAccount->id !== $currentUser->id) {
+                if ($existingAccount && $existingAccount->IDPERS !== $currentUser->IDPERS) {
                     return redirect()->route('connected-accounts')->with('error', 'Ce compte Google est déjà lié à un autre utilisateur.');
                 }
 
@@ -42,10 +42,10 @@ class GoogleAuthController extends Controller
             }
 
             // CAS 2 : Login / Inscription classique
-            $user = User::where('google_id', $google_user->getId())->first();
+            $user = Client::where('google_id', $google_user->getId())->first();
 
             if (!$user) {
-                $user = User::where('email', $google_user->getEmail())->first();
+                $user = Client::where('MAILCLIENT', $google_user->getEmail())->first();
 
                 if ($user) {
                     $user->update([
@@ -53,12 +53,19 @@ class GoogleAuthController extends Controller
                         'google_email' => $google_user->getEmail()
                     ]);
                 } else {
-                    $user = User::create([
-                        'name' => $google_user->getName(),
-                        'email' => $google_user->getEmail(),
+                    // Extraire nom et prénom du nom complet
+                    $fullName = $google_user->getName();
+                    $nameParts = explode(' ', $fullName, 2);
+                    
+                    $user = Client::create([
+                        'NOMPERS' => $nameParts[0] ?? 'Nom',
+                        'PRENOMPERS' => $nameParts[1] ?? '',
+                        'MAILCLIENT' => $google_user->getEmail(),
+                        'TELCLIENT' => 0,
                         'google_id' => $google_user->getId(),
                         'google_email' => $google_user->getEmail(),
                         'password' => null,
+                        'is_admin' => 0
                     ]);
                 }
             } else {
@@ -78,7 +85,7 @@ class GoogleAuthController extends Controller
     // Délier le compte Google
     public function unlink()
     {
-        /** @var User $user */
+        /** @var Client $user */
         $user = Auth::user();
         
         // Sécurité : Empêcher de délier si c'est le seul moyen de connexion et qu'il n'y a pas de mot de passe

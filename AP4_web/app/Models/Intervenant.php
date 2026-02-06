@@ -25,7 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Intervenant extends Model
 {
-	protected $table = 'intervenant';
+	protected $table = 'INTERVENANT';
 	protected $primaryKey = 'IDPERS';
 	public $timestamps = false;
 

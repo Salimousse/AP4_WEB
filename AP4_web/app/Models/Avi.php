@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Avi extends Model
 {
-	protected $table = 'avis';
+	protected $table = 'AVIS';
 	protected $primaryKey = 'IDAVIS';
 	public $timestamps = false;
 

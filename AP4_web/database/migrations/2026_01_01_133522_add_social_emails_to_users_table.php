@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('CLIENT', function (Blueprint $table) {
             $table->string('google_email')->nullable()->after('google_id');
             $table->string('microsoft_email')->nullable()->after('microsoft_id');
         });
@@ -22,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('CLIENT', function (Blueprint $table) {
             $table->dropColumn(['google_email', 'microsoft_email']);
         });
     }

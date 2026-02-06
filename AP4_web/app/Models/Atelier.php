@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Atelier extends Model
 {
-	protected $table = 'atelier';
+	protected $table = 'ATELIER';
 	protected $primaryKey = 'IDMANIF';
 	public $incrementing = false;
 	public $timestamps = false;

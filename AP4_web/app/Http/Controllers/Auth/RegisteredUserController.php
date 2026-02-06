@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Client;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -31,14 +31,21 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:CLIENT,MAILCLIENT'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+        // Extraire nom et prénom
+        $fullName = $request->name;
+        $nameParts = explode(' ', $fullName, 2);
+
+        $user = Client::create([
+            'NOMPERS' => $nameParts[0] ?? 'Nom',
+            'PRENOMPERS' => $nameParts[1] ?? '',
+            'MAILCLIENT' => $request->email,
+            'TELCLIENT' => 0,
             'password' => Hash::make($request->password),
+            'is_admin' => 0
         ]);
 
         event(new Registered($user));

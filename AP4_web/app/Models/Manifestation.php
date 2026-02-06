@@ -33,7 +33,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Manifestation extends Model
 {
-	protected $table = 'manifestations';
+	protected $table = 'MANIFESTATIONS';
 	protected $primaryKey = 'IDMANIF';
 	public $timestamps = false;
 

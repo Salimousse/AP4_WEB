@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Concert extends Model
 {
-	protected $table = 'concert';
+	protected $table = 'CONCERT';
 	protected $primaryKey = 'IDMANIF';
 	public $incrementing = false;
 	public $timestamps = false;

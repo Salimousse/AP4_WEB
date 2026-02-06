@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Sponsoriser extends Model
 {
-	protected $table = 'sponsoriser';
+	protected $table = 'SPONSORISER';
 	public $incrementing = false;
 	public $timestamps = false;
 

@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Artiste extends Model
 {
-	protected $table = 'artiste';
+	protected $table = 'ARTISTE';
 	protected $primaryKey = 'IDPERS';
 	public $timestamps = false;
 

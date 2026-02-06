@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Client;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 use Exception;
@@ -25,7 +25,7 @@ class MicrosoftAuthController extends Controller
             // --- Logique de connexion / Inscription ---
 
             // A. Est-ce que cet utilisateur Microsoft existe déjà dans notre base ?
-            $user = User::where('microsoft_id', $microsoftUser->getId())->first();
+            $user = Client::where('microsoft_id', $microsoftUser->getId())->first();
 
             if ($user) {
                 // OUI : on le connecte direct (et met à jour l'email au cas où il aurait changé)
@@ -36,7 +36,7 @@ class MicrosoftAuthController extends Controller
 
             // B. Si NON : Est-ce qu'il existe déjà un utilisateur avec cet Email ?
             // (Ex: il s'est inscrit avec Google ou Email/Mdp avant)
-            $user = User::where('email', $microsoftUser->getEmail())->first();
+            $user = Client::where('MAILCLIENT', $microsoftUser->getEmail())->first();
 
             if ($user) {
                 // OUI : On met à jour son compte pour ajouter l'ID Microsoft
@@ -51,13 +51,19 @@ class MicrosoftAuthController extends Controller
             }
 
             // C. Si NON à tout : C'est un nouvel inscrit
-            $newUser = User::create([
-                'name' => $microsoftUser->getName(),
-                'email' => $microsoftUser->getEmail(),
+            // Extraire nom et prénom du nom complet
+            $fullName = $microsoftUser->getName();
+            $nameParts = explode(' ', $fullName, 2);
+            
+            $newUser = Client::create([
+                'NOMPERS' => $nameParts[0] ?? 'Nom',
+                'PRENOMPERS' => $nameParts[1] ?? '',
+                'MAILCLIENT' => $microsoftUser->getEmail(),
+                'TELCLIENT' => 0,
                 'microsoft_id' => $microsoftUser->getId(),
                 'microsoft_email' => $microsoftUser->getEmail(),
-                'password' => null, // Pas de mot de passe car géré par Microsoft
-                // 'google_id' => null, // Automatique
+                'password' => null,
+                'is_admin' => 0
             ]);
 
             Auth::login($newUser);
@@ -72,7 +78,7 @@ class MicrosoftAuthController extends Controller
     // Délier le compte Microsoft
     public function unlink()
     {
-        /** @var User $user */
+        /** @var Client $user */
         $user = Auth::user();
 
         // Sécurité : Empêcher de délier si c'est le seul moyen de connexion et qu'il n'y a pas de mot de passe

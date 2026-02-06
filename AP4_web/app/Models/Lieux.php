@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Lieux extends Model
 {
-	protected $table = 'lieux';
+	protected $table = 'LIEUX';
 	protected $primaryKey = 'IDLIEUX';
 	public $timestamps = false;
 

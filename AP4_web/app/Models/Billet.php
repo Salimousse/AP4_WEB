@@ -32,7 +32,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Billet extends Model
 {
-	protected $table = 'billet';
+	protected $table = 'BILLET';
 	protected $primaryKey = 'IDBILLET';
 	public $timestamps = false;
 

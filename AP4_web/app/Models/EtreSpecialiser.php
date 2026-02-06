@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class EtreSpecialiser extends Model
 {
-	protected $table = 'etre_specialiser';
+	protected $table = 'ETRE_SPECIALISER';
 	public $incrementing = false;
 	public $timestamps = false;
 

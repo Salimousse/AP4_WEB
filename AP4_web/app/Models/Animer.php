@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Animer extends Model
 {
-	protected $table = 'animer';
+	protected $table = 'ANIMER';
 	public $incrementing = false;
 	public $timestamps = false;
 

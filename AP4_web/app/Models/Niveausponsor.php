@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Niveausponsor extends Model
 {
-	protected $table = 'niveausponsors';
+	protected $table = 'NIVEAUSPONSORS';
 	protected $primaryKey = 'IDNIVSPONSORS';
 	public $timestamps = false;
 

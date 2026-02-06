@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Presenter extends Model
 {
-	protected $table = 'presenter';
+	protected $table = 'PRESENTER';
 	public $incrementing = false;
 	public $timestamps = false;
 

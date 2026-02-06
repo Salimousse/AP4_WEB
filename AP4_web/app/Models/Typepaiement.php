@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Typepaiement extends Model
 {
-	protected $table = 'typepaiement';
+	protected $table = 'TYPEPAIEMENT';
 	protected $primaryKey = 'IDTYPEPAIEMENT';
 	public $timestamps = false;
 

@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Sponsor extends Model
 {
-	protected $table = 'sponsors';
+	protected $table = 'SPONSORS';
 	protected $primaryKey = 'IDSPONSORS';
 	public $timestamps = false;
 

@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            if (!Schema::hasColumn('users', 'facebook_id')) {
+        Schema::table('CLIENT', function (Blueprint $table) {
+            if (!Schema::hasColumn('client', 'facebook_id')) {
                 $table->string('facebook_id')->nullable()->after('microsoft_id');
             }
             $table->string('facebook_email')->nullable()->after('facebook_id');
@@ -24,7 +24,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('CLIENT', function (Blueprint $table) {
             $table->dropColumn(['facebook_id', 'facebook_email']);
         });
     }

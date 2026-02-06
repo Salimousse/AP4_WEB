@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up()
 {
-    Schema::table('users', function (Blueprint $table) {
-        $table->string('google_id')->nullable()->after('email');
+    Schema::table('CLIENT', function (Blueprint $table) {
+        $table->string('google_id')->nullable()->after('MAILCLIENT');
         $table->string('password')->nullable()->change(); // Rendre le mot de passe nullable
         
     });
@@ -23,8 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
+        Schema::table('CLIENT', function (Blueprint $table) {
+            $table->dropColumn('google_id');
         });
     }
 };
