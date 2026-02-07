@@ -54,82 +54,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/ticket/{idBillet}', [ReservationController::class, 'showTicket'])->name('page.ticket-reservation');
 }); // <-- cette accolade ferme le groupe auth
 
-// Route de debug pour tester la validation
-Route::get('/debug-validation', function () {
-    $testData = base64_decode('eyJlbWFpbF91c2VyIjoic2V0dG91dGlzYWxpbUBnbWFpbC5jb20iLCJub21fdXNlciI6InNhbGltIiwidGVsZXBob25lIjoiMDAwMDAwMDAwMCIsImlkX21hbmlmIjoxLCJwcml4IjozNX0');
-    dd(json_decode($testData, true));
-});
-
-// Route temporaire pour tester les WebSockets
-Route::get('/test-websocket', function () {
-    return view('test-websocket');
-});
-
-// Dev helper: déclenche un message et broadcast pour tester en direct
-Route::get('/debug/ws-broadcast', function () {
-    $conversation = \App\Models\Conversation::firstOrCreate(
-        ['conversation_id' => 'conv_test_real'],
-        ['admin_active' => false]
-    );
-
-    $message = \App\Models\Message::create([
-        'conversation_id' => $conversation->id,
-        'sender' => 'user',
-        'content' => 'Message debug ' . now()->toDateTimeString(),
-    ]);
-
-    broadcast(new \App\Events\MessageSent($message));
-
-    return response()->json(['ok' => true, 'conversation' => $conversation->conversation_id]);
-});
-
-// Dev helper: appeler le contrôleur de chat comme si un utilisateur envoyait un message (ignore CSRF)
-Route::get('/debug/send-message', function () {
-    $message = request('message', 'Message debug via route');
-    $conversationId = request('conversation', 'test123');
-    $req = request()->merge(['message' => $message, 'conversationId' => $conversationId]);
-    $controller = app(\App\Http\Controllers\ChatbotController::class);
-    return $controller->sendMessage($req);
-});
-
-// Dev helper: simuler une réponse admin (ignore auth/CSRF) pour un conversation_id externe
-Route::get('/debug/admin-respond/{conversationId}', function ($conversationId) {
-    $conversation = \App\Models\Conversation::where('conversation_id', $conversationId)->first();
-    if (! $conversation) return response()->json(['ok' => false, 'error' => 'Conversation introuvable'], 404);
-
-    $adminMessage = \App\Models\Message::create([
-        'conversation_id' => $conversation->id,
-        'sender' => 'admin',
-        'content' => 'Réponse admin debug ' . now()->toDateTimeString(),
-    ]);
-
-
-    broadcast(new \App\Events\MessageSent($adminMessage));
-
-    return response()->json(['ok' => true, 'conversation' => $conversationId]);
-});
-
-// Dev helper: lister les dernières conversations (id, conversation_id)
-Route::get('/debug/list-conversations', function () {
-    return response()->json(\App\Models\Conversation::orderBy('created_at', 'desc')->take(20)->get(['id','conversation_id','admin_active','created_at']));
-});
-
-// Dev helper: afficher une page ticket de test sans billet en base
-Route::get('/debug/show-ticket', function () {
-    $billet = (object) [
-        'QRCODEBILLET' => 'TEST-QRCODE-123456',
-        'client' => (object) ['NOMPERS' => 'Doe', 'PRENOMPERS' => 'John'],
-        'manifestation' => (object) ['NOMMANIF' => 'Concert Expo', 'PRIXMANIF' => 0]
-    ];
-
-    return view('pages.ticket-reservation', ['billet' => $billet]);
-});
-
-Route::get('/billet/{idBillet}', [ReservationController::class, 'showTicket'])->name('reservation.success');
-
-
-
-
 // Routes pour l'authentification Google et Microsoft
 Route::get('auth/google', [GoogleAuthController::class, 'redirect'])->name('google-auth');
 Route::get('auth/google/callback', [GoogleAuthController::class, 'callbackGoogle']);
@@ -152,14 +76,94 @@ Route::get('/politique-de-confidentialite', [PageController::class, 'privacy'])-
 Route::get('/conditions-de-vente', [PageController::class, 'terms'])->name('terms');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 
+// ========================================
+// 💬 ROUTES DU CHATBOT DE SUPPORT
+// ========================================
+// Ces routes gèrent la communication en temps réel avec le chatbot
+// Utilisées par le widget de chat sur la page /assistance
+
+/**
+ * Envoyer un message utilisateur au chatbot
+ * 
+ * Endpoint: POST /chat/{conversationId}/send
+ * 
+ * Payload JSON:
+ * {
+ *   "message": "Quelle est le prix des places ?",
+ *   "conversationId": "uuid-or-random-id"
+ * }
+ * 
+ * Processus:
+ * 1. Valide le message et crée/récupère une conversation
+ * 2. Stocke le message utilisateur en base
+ * 3. Détecte les mots-clés d'escalade (admin, humain, parler à)
+ * 4. Appelle l'API Google Gemini pour générer une réponse
+ * 5. Broadcast la réponse via WebSocket en temps réel
+ * 6. Retourne la réponse et diffuse l'événement MessageSent
+ * 
+ * Response:
+ * {
+ *   "reply": "Texte de la réponse du bot"
+ * }
+ * 
+ * Écouteur WebSocket (côté client):
+ *   window.Echo.channel('conversation.' + conversationId)
+ *     .listen('.message.sent', (message) => { ... })
+ */
 Route::post('/chat/{conversationId}/send', [ChatbotController::class, 'sendMessage']);
+
+/**
+ * Vérifier s'il y a une réponse admin
+ * 
+ * Endpoint: GET /chat/{conversationId}/check
+ * 
+ * Utilisé dans une boucle d'interrogation (polling) pour vérifier
+ * si un admin humain a répondu à une demande d'escalade
+ * 
+ * Retour: null si pas de réponse, ou le contenu du message admin
+ * 
+ * Response:
+ * {
+ *   "message": "Voici la réponse de l'admin" ou null
+ * }
+ * 
+ * Flux d'escalade:
+ * 1. Utilisateur écrit "parler à un humain"
+ * 2. ChatbotController détecte le mot-clé et envoie AdminRequested
+ * 3. Frontend poll /check toutes les 2 secondes
+ * 4. Quand un admin répond, /check retourne la réponse
+ */
 Route::get('/chat/{conversationId}/check', [ChatbotController::class, 'checkMessage']);
+
+/**
+ * Récupérer l'historique complet des messages
+ * 
+ * Endpoint: GET /chat/{conversationId}/messages
+ * 
+ * Retourne tous les messages de la conversation (user, bot, admin)
+ * triés par date croissante.
+ * 
+ * Utilisé pour restaurer l'historique lors du chargement
+ * (Actuellement DÉSACTIVÉ dans support.blade.php pour
+ * éviter de montrer l'historique aux utilisateurs non-auth)
+ * 
+ * Response:
+ * {
+ *   "messages": [
+ *     {
+ *       "id": 1,
+ *       "sender": "user|bot|admin",
+ *       "content": "Texte du message",
+ *       "created_at": "2024-01-15T10:30:00Z"
+ *     },
+ *     ...
+ *   ]
+ * }
+ */
 Route::get('/chat/{conversationId}/messages', [ChatbotController::class, 'getMessages']);
 
 Route::get('/festivals', [PageController::class, 'festivals'])->name('festivals');
 Route::get('/programme/{id}', [PageController::class, 'festival'])->name('programme');
-
-
-
+Route::get('/billet/{idBillet}', [ReservationController::class, 'showTicket'])->name('reservation.success');
 
 require __DIR__.'/auth.php';
