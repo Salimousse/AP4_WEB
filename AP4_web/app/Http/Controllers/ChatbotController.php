@@ -61,6 +61,10 @@ class ChatbotController extends Controller
         // Chaque utilisateur a un conversationId unique (généré côté frontend)
         // Si elle existe: la récupère
         // Si elle n'existe pas: la crée avec admin_active = false
+        // 
+        // Note: admin_active est utilisé par le scheduler pour différencier:
+        //   - Conversations chatbot seul → suppression après 30 jours
+        //   - Conversations avec humain → suppression après 6 mois
         $conversation = Conversation::firstOrCreate(
             ['conversation_id' => $conversationId],
             ['admin_active' => false]

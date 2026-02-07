@@ -92,6 +92,9 @@ class AdminRequested implements ShouldBroadcastNow
     public function broadcastWith(): array
     {
         return [
+            // L'ID en base de données (pour la route admin)
+            'id' => $this->conversation->id,
+            
             // L'ID unique de la conversation
             'conversation_id' => $this->conversation->conversation_id,
             

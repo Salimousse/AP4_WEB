@@ -8,15 +8,17 @@ function listenToAdminRequests() {
         console.log('Démarrage de l\'écoute des demandes admin...');
         window.Echo.private('admin-support')
             .listen('.admin.requested', (event) => {
-                console.log('Nouvelle demande d\'admin reçue:', event);
+                console.log('[ADMIN] Événement brut reçu:', event);
+                console.log('[ADMIN] event.data:', event.data);
+                console.log('[ADMIN] event keys:', Object.keys(event));
+                
+                // Essayer les deux structures possibles
+                const data = event.data || event;
+                console.log('[ADMIN] Données finales:', data);
+                console.log('[ADMIN] Conversation ID:', data.id || data.conversation_id);
 
-                // Afficher la notification
-                showAdminNotification(event);
-
-                // Jouer un son de notification (optionnel)
+                showAdminNotification(data);
                 playNotificationSound();
-
-                // Mettre à jour le compteur de demandes en attente
                 updatePendingRequestsCount();
             })
             .error((error) => {
@@ -29,38 +31,54 @@ function listenToAdminRequests() {
 
 // Fonction pour afficher une notification de demande d'admin
 function showAdminNotification(data) {
+    console.log('📢 Données reçues dans showAdminNotification:', data);
+    
     // Créer l'élément de notification
     const notification = document.createElement('div');
-    notification.className = 'admin-notification alert alert-warning';
+    notification.className = 'bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded shadow-lg';
+    
+    // Format du timestamp
+    const timestamp = new Date(data.created_at).toLocaleTimeString('fr-FR');
+    
+    // L'ID peut être à data.id ou data.conversation_id selon comment l'événement arrive
+    const conversationId = data.id || data.conversation_id;
+    console.log('🔗 ID de conversation pour le bouton:', conversationId);
+    
     notification.innerHTML = `
-        <div class="notification-header">
-            <strong>Demande de support</strong>
-            <span class="timestamp">${new Date(data.created_at).toLocaleTimeString()}</span>
+        <div class="flex justify-between items-start mb-2">
+            <div>
+                <p class="font-bold text-red-800">🚨 Demande de support - ${timestamp}</p>
+                <p class="text-red-700 text-sm mt-1">Dernier message: <em>${data.last_message || 'Aucun message'}</em></p>
+            </div>
+            <button onclick="closeNotification(this)" class="text-red-500 hover:text-red-700 font-bold">✕</button>
         </div>
-        <div class="notification-content">
-            <p><strong>Dernier message:</strong> ${data.last_message || 'Aucun message'}</p>
-            <button class="btn btn-primary btn-sm" onclick="openConversation('${data.conversation_id}')">
-                Prendre en charge
-            </button>
-        </div>
+        <button onclick="openConversation(${conversationId})" class="mt-3 bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition-colors">
+            Prendre en charge →
+        </button>
     `;
 
     // Ajouter au conteneur de notifications
     const container = document.getElementById('admin-notifications') || document.body;
     container.appendChild(notification);
 
-    // Auto-suppression après 30 secondes
+    // Auto-suppression après 60 secondes
     setTimeout(() => {
         if (notification.parentNode) {
             notification.remove();
         }
-    }, 30000);
+    }, 60000);
+}
+
+// Fermer une notification
+function closeNotification(button) {
+    button.closest('div').parentElement.remove();
 }
 
 // Fonction pour ouvrir une conversation
 function openConversation(conversationId) {
-    // Rediriger vers la page de chat admin avec cette conversation
-    window.location.href = `/admin/chat/${conversationId}`;
+    // conversationId est maintenant l'ID BDD (numérique)
+    // Rediriger vers la page de détail de la conversation
+    window.location.href = `/admin/interventions/${conversationId}`;
 }
 
 // Fonction pour jouer un son de notification
@@ -87,3 +105,7 @@ function updatePendingRequestsCount() {
 document.addEventListener('DOMContentLoaded', function() {
     listenToAdminRequests();
 });
+
+// Exporter les fonctions (APRÈS les définitions)
+window.openConversation = openConversation;
+window.closeNotification = closeNotification;

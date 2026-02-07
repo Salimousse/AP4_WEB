@@ -270,10 +270,26 @@
                              */
                             setupRealtime() {
                                 if (!window.Echo) {
-                                    console.warn('WebSocket non disponible');
+                                    console.warn('WebSocket pas encore prêt, nouvelle tentative dans 1s...');
+                                    // Réessayer toutes les secondes jusqu'à ce que Echo soit disponible
+                                    let attempts = 0;
+                                    const interval = setInterval(() => {
+                                        attempts++;
+                                        if (window.Echo) {
+                                            clearInterval(interval);
+                                            console.log('✅ WebSocket connecté après ' + attempts + ' tentative(s)');
+                                            this.connectEcho();
+                                        } else if (attempts > 10) {
+                                            clearInterval(interval);
+                                            console.error('❌ WebSocket indisponible après 10 tentatives');
+                                        }
+                                    }, 1000);
                                     return;
                                 }
+                                this.connectEcho();
+                            },
 
+                            connectEcho() {
                                 // S'abonner au canal public de conversation
                                 window.Echo.channel(`conversation.${this.conversationId}`)
                                     .listen('.message.sent', (event) => {
@@ -292,6 +308,7 @@
                                             this.scrollToBottom();
                                         }
                                     });
+                                console.log('✅ Écoute WebSocket active sur conversation.' + this.conversationId);
                             },
 
                             /**

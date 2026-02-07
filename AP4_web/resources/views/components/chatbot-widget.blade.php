@@ -76,10 +76,25 @@
             setupRealtime() {
                 // Écouter les messages temps réel pour cette conversation
                 if (!window.Echo) {
-                    console.error('Echo non disponible — vérifie que le JS de WebSocket est chargé');
+                    console.warn('Echo pas encore prêt, nouvelle tentative dans 1s...');
+                    let attempts = 0;
+                    const interval = setInterval(() => {
+                        attempts++;
+                        if (window.Echo) {
+                            clearInterval(interval);
+                            console.log('✅ WebSocket connecté après ' + attempts + ' tentative(s)');
+                            this.connectEcho();
+                        } else if (attempts > 10) {
+                            clearInterval(interval);
+                            console.error('❌ WebSocket indisponible après 10 tentatives');
+                        }
+                    }, 1000);
                     return;
                 }
+                this.connectEcho();
+            },
 
+            connectEcho() {
                 console.log('Configuration WebSocket pour : conversation.' + this.conversationId);
 
                 // Use public channel for conversation so unauthenticated chat users receive messages
