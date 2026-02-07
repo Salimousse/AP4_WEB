@@ -1,7 +1,10 @@
 <header class="bg-festival-light border-b border-festival-dark/10" x-data="{ open: false }">
     <div class="max-w-7xl mx-auto px-6 py-6">
         <div class="flex items-center justify-between">
-            <a href="{{ url('/') }}" class="text-3xl font-black text-festival-dark tracking-tight">CALE SONS</a>
+            <a href="{{ url('/') }}" class="flex items-center gap-3">
+                <img src="{{ asset('images/cale-sons-logo.svg') }}" alt="Cale Sons Logo" class="w-12 h-12">
+                <span class="text-3xl font-black text-festival-dark tracking-tight">CALE SONS</span>
+            </a>
             <nav class="flex items-center gap-8">
                 <a href="{{ route('contact') }}" class="text-festival-dark hover:text-festival-primary transition font-medium">Contact</a>
                 <a href="{{ route('about') }}" class="text-festival-dark hover:text-festival-primary transition font-medium">À propos</a>
