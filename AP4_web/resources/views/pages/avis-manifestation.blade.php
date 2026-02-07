@@ -42,7 +42,7 @@
 
                     <div class="flex-1">
                         <p class="text-3xl font-bold text-festival-dark mb-2">
-                            {{ $totalAvis }} {{ $totalAvis > 1 ? 'avis' : 'avis' }}
+                            {{ $totalAvis }} {{ $totalAvis === 1 ? 'avis' : 'avis' }}
                         </p>
                         <p class="text-festival-dark/70 text-lg">
                             Note moyenne basée sur les évaluations des participants
@@ -115,7 +115,7 @@
                                 </div>
                                 
                                 <p class="text-festival-dark/80 font-semibold">
-                                    <strong>{{ $avi->billet->client->NOMPERS ?? 'Anonyme' }}</strong>
+                                    <strong>{{ $avi->billet?->client?->NOMPERS ?? 'Anonyme' }}</strong>
                                     <span class="text-festival-dark/50 text-sm">
                                         • {{ $avi->created_at ? $avi->created_at->format('d/m/Y') : 'Date inconnue' }}
                                     </span>
@@ -153,7 +153,7 @@
 
             <!-- Bouton pour revenir -->
             <div class="mt-8 text-center">
-                <a href="{{ route('programme', $idManif) }}" 
+                <a href="{{ route('programme', ['id' => $idManif]) }}" 
                    class="inline-block bg-festival-primary text-white font-bold rounded-lg px-8 py-3 hover:bg-festival-secondary transition">
                    ← Retour à la manifestation
                 </a>
