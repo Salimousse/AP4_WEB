@@ -19,7 +19,8 @@ class PageController extends Controller
         $festival = \App\Models\Festival::with([
             'manifestations.concert',
             'manifestations.conference',
-            'manifestations.atelier'
+            'manifestations.atelier',
+            'manifestations.avis'
         ])->findOrFail($id);
         
         // Séparer les manifestations par type

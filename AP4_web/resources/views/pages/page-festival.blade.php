@@ -53,12 +53,31 @@
                                 <span class="font-semibold">Fin prévue:</span> {{ \Carbon\Carbon::parse($manif->concert->DATEHEUREFINCONCERT)->format('H:i') }}
                             </div>
                         @endif
-                        <div class="mt-auto pt-4 border-t border-festival-dark/10 flex justify-between items-center">
-                            <span class="text-xs text-festival-dark/60">Places : {{ $manif->NBMAXPARTICIPANTMANIF }}</span>
-                            <a href="{{ route('reservation.create', $manif->IDMANIF) }}" 
-                               class="inline-block bg-festival-primary text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-festival-secondary transition">
-                                Réserver
-                            </a>
+                        <div class="mt-auto pt-4 border-t border-festival-dark/10">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs text-festival-dark/60">Places : {{ $manif->NBMAXPARTICIPANTMANIF }}</span>
+                                @php
+                                    $noteMoyenne = $manif->avis->avg('NOTEAVIS');
+                                    $totalAvis = $manif->avis->count();
+                                @endphp
+                                @if($totalAvis > 0)
+                                    <span class="text-xs font-semibold text-festival-dark flex items-center gap-1">
+                                        ⭐ {{ number_format($noteMoyenne, 1) }} ({{ $totalAvis }})
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="flex gap-2">
+                                <a href="{{ route('reservation.create', $manif->IDMANIF) }}" 
+                                   class="flex-1 bg-festival-primary text-white text-center px-3 py-2 rounded-lg text-sm font-bold hover:bg-festival-secondary transition">
+                                    Réserver
+                                </a>
+                                @if($totalAvis > 0)
+                                    <a href="{{ route('avis.index', $manif->IDMANIF) }}" 
+                                       class="bg-festival-dark/10 text-festival-dark px-3 py-2 rounded-lg text-sm font-bold hover:bg-festival-dark/20 transition" title="Voir les avis">
+                                        📊
+                                    </a>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -90,12 +109,31 @@
                                 <span class="font-semibold">Format:</span> {{ $manif->conference->DEBATCONF ? 'Débat interactif' : 'Présentation magistrale' }}
                             </div>
                         @endif
-                        <div class="mt-auto pt-4 border-t border-festival-dark/10 flex justify-between items-center">
-                            <span class="text-xs text-festival-dark/60">Places : {{ $manif->NBMAXPARTICIPANTMANIF }}</span>
-                            <a href="{{ route('reservation.create', $manif->IDMANIF) }}" 
-                               class="inline-block bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-green-700 transition">
-                                Réserver
-                            </a>
+                        <div class="mt-auto pt-4 border-t border-festival-dark/10">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-xs text-festival-dark/60">Places : {{ $manif->NBMAXPARTICIPANTMANIF }}</span>
+                                @php
+                                    $noteMoyenne = $manif->avis->avg('NOTEAVIS');
+                                    $totalAvis = $manif->avis->count();
+                                @endphp
+                                @if($totalAvis > 0)
+                                    <span class="text-xs font-semibold text-festival-dark flex items-center gap-1">
+                                        ⭐ {{ number_format($noteMoyenne, 1) }} ({{ $totalAvis }})
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="flex gap-2">
+                                <a href="{{ route('reservation.create', $manif->IDMANIF) }}" 
+                                   class="flex-1 bg-green-600 text-white text-center px-3 py-2 rounded-lg text-sm font-bold hover:bg-green-700 transition">
+                                    Réserver
+                                </a>
+                                @if($totalAvis > 0)
+                                    <a href="{{ route('avis.index', $manif->IDMANIF) }}" 
+                                       class="bg-festival-dark/10 text-festival-dark px-3 py-2 rounded-lg text-sm font-bold hover:bg-festival-dark/20 transition" title="Voir les avis">
+                                        📊
+                                    </a>
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>

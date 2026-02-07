@@ -76,12 +76,21 @@
                     </div>
                 </div>
 
-                <div class="mt-8 pt-6 border-t border-gray-200">
+                <div class="mt-8 pt-6 border-t border-gray-200 space-y-3">
                     <button onclick="window.print()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow transition flex justify-center items-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                         Imprimer
                     </button>
-                    <a href="{{ route('festivals') }}" class="block text-center mt-4 text-sm text-gray-500 hover:underline">
+                    
+                    <a href="{{ route('avis.form', $billet->IDBILLET) }}" class="block text-center bg-festival-primary hover:bg-festival-secondary text-white font-bold py-2 px-4 rounded shadow transition">
+                        📝 Ajouter un avis
+                    </a>
+                    
+                    <a href="{{ route('avis.index', $billet->IDMANIF) }}" class="block text-center bg-festival-dark/10 hover:bg-festival-dark/20 text-festival-dark font-bold py-2 px-4 rounded shadow transition">
+                        📊 Voir les avis
+                    </a>
+                    
+                    <a href="{{ route('festivals') }}" class="block text-center text-sm text-gray-500 hover:underline pt-2">
                         Retour au programme
                     </a>
                 </div>

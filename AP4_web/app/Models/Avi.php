@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $IDMANIF
  * @property int $NOTEAVIS
  * @property string|null $COMMENTAIREAVIS
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
  * 
  * @property Billet $billet
  * @property Manifestation $manifestation
@@ -26,7 +28,7 @@ class Avi extends Model
 {
 	protected $table = 'AVIS';
 	protected $primaryKey = 'IDAVIS';
-	public $timestamps = false;
+	public $timestamps = true;
 
 	protected $casts = [
 		'IDBILLET' => 'int',
@@ -38,7 +40,9 @@ class Avi extends Model
 		'IDBILLET',
 		'IDMANIF',
 		'NOTEAVIS',
-		'COMMENTAIREAVIS'
+		'COMMENTAIREAVIS',
+		'created_at',
+		'updated_at'
 	];
 
 	public function billet()

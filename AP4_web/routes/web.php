@@ -52,6 +52,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/reservation', [ReservationController::class, 'store'])->name('reservation.store');
     Route::get('/mes-reservations', [ProfileController::class, 'ShowTicket'])->name('page.mes-reservations');
     Route::get('/ticket/{idBillet}', [ReservationController::class, 'showTicket'])->name('page.ticket-reservation');
+    
+    // Routes pour les avis
+    Route::get('/avis/form/{idBillet}', [\App\Http\Controllers\AvisController::class, 'showForm'])->name('avis.form');
+    Route::post('/avis/{idBillet}', [\App\Http\Controllers\AvisController::class, 'store'])->name('avis.store');
 }); // <-- cette accolade ferme le groupe auth
 
 // Routes pour l'authentification Google et Microsoft
@@ -165,5 +169,6 @@ Route::get('/chat/{conversationId}/messages', [ChatbotController::class, 'getMes
 Route::get('/festivals', [PageController::class, 'festivals'])->name('festivals');
 Route::get('/programme/{id}', [PageController::class, 'festival'])->name('programme');
 Route::get('/billet/{idBillet}', [ReservationController::class, 'showTicket'])->name('reservation.success');
+Route::get('/avis/{idManif}', [\App\Http\Controllers\AvisController::class, 'showByManifestration'])->name('avis.index');
 
 require __DIR__.'/auth.php';
