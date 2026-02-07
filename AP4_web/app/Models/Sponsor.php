@@ -34,7 +34,8 @@ class Sponsor extends Model
 
 	protected $fillable = [
 		'IDNIVSPONSORS',
-		'NOMSPONSORS'
+		'NOMSPONSORS',
+		'LOGOSPONSOR'
 	];
 
 	public function niveausponsor()

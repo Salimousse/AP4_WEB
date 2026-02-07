@@ -60,12 +60,25 @@
     <section class="py-16 bg-festival-light">
         <div class="max-w-7xl mx-auto px-6">
             <h3 class="text-center text-2xl font-bold text-festival-dark mb-12">Nos partenaires</h3>
-            <div class="flex justify-center gap-12">
-                @for($i = 1; $i <= 5; $i++)
-                    <div class="w-32 h-16 bg-festival-dark/10 rounded flex items-center justify-center opacity-50 hover:opacity-100 transition">
-                        <span class="text-festival-dark/60 font-semibold">Logo {{ $i }}</span>
+            <div class="flex justify-center gap-8 flex-wrap">
+                @forelse($sponsors as $sponsor)
+                    <div class="w-44 h-24 bg-white rounded-lg shadow flex items-center justify-center opacity-85 hover:opacity-100 transition border border-festival-dark/5 p-4 hover:shadow-lg">
+                        @if($sponsor->LOGOSPONSOR)
+                            @php
+                                $logoUrl = str_starts_with($sponsor->LOGOSPONSOR, 'http') 
+                                    ? $sponsor->LOGOSPONSOR 
+                                    : asset('storage/' . $sponsor->LOGOSPONSOR);
+                            @endphp
+                            <img src="{{ $logoUrl }}" alt="{{ $sponsor->NOMSPONSORS }}" class="h-16 object-contain max-w-full">
+                        @else
+                            <span class="text-festival-dark font-semibold text-center text-sm">{{ $sponsor->NOMSPONSORS }}</span>
+                        @endif
                     </div>
-                @endfor
+                @empty
+                    <div class="text-center text-festival-dark/60">
+                        <p>Aucun partenaire pour le moment</p>
+                    </div>
+                @endforelse
             </div>
         </div>
     </section>

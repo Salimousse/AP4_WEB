@@ -9,10 +9,12 @@ use App\Http\Controllers\ProgrammeController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\FacebookAuthController;
-use App\Http\Controllers\MicrosoftAuthController; 
+use App\Http\Controllers\MicrosoftAuthController;
+use App\Models\Sponsor;
 
 Route::get('/', function () {
-    return view('welcome');
+    $sponsors = Sponsor::limit(5)->get();
+    return view('welcome', compact('sponsors'));
 });
 
 Route::get('/dashboard', function () {
