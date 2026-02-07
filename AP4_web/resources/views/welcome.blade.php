@@ -7,6 +7,8 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800&display=swap" rel="stylesheet" />
     
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -32,10 +34,10 @@
 
     @include('layouts.header')
 
-    <section class="h-[500px] bg-gradient-to-br from-festival-primary to-festival-secondary flex items-center justify-center">
-        <div class="text-center text-white px-6">
-            <h2 class="text-5xl font-bold mb-4">Festival Cale Sons 2026</h2>
-            <p class="text-xl">Terres de Légendes : Entre Racines et Futur</p>
+    <section class="h-[300px] sm:h-[400px] md:h-[500px] bg-gradient-to-br from-festival-primary to-festival-secondary flex items-center justify-center">
+        <div class="text-center text-white px-4 sm:px-6">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-4">Festival Cale Sons 2026</h2>
+            <p class="text-base sm:text-lg md:text-xl">Terres de Légendes : Entre Racines et Futur</p>
         </div>
     </section>
 
@@ -46,32 +48,32 @@
         ];
     @endphp
 
-    <section class="py-16">
-        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12">
+    <section class="py-8 sm:py-12 md:py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 grid sm:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
             @foreach($sections as [$title, $text])
                 <div>
-                    <h3 class="text-2xl font-bold text-festival-dark mb-4">{{ $title }}</h3>
-                    <p class="text-festival-dark/70 leading-relaxed">{{ $text }}</p>
+                    <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-festival-dark mb-3 sm:mb-4">{{ $title }}</h3>
+                    <p class="text-sm sm:text-base text-festival-dark/70 leading-relaxed">{{ $text }}</p>
                 </div>
             @endforeach
         </div>
     </section>
 
-    <section class="py-16 bg-festival-light">
-        <div class="max-w-7xl mx-auto px-6">
-            <h3 class="text-center text-2xl font-bold text-festival-dark mb-12">Nos partenaires</h3>
-            <div class="flex justify-center gap-8 flex-wrap">
+    <section class="py-12 sm:py-16 bg-festival-light">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+            <h3 class="text-center text-xl sm:text-2xl font-bold text-festival-dark mb-8 sm:mb-12">Nos partenaires</h3>
+            <div class="flex justify-center gap-4 sm:gap-6 md:gap-8 flex-wrap">
                 @forelse($sponsors as $sponsor)
-                    <div class="w-44 h-24 bg-white rounded-lg shadow flex items-center justify-center opacity-85 hover:opacity-100 transition border border-festival-dark/5 p-4 hover:shadow-lg">
+                    <div class="w-36 sm:w-40 md:w-44 h-20 sm:h-22 md:h-24 bg-white rounded-lg shadow flex items-center justify-center opacity-85 hover:opacity-100 transition border border-festival-dark/5 p-3 sm:p-4 hover:shadow-lg">
                         @if($sponsor->LOGOSPONSOR)
                             @php
                                 $logoUrl = str_starts_with($sponsor->LOGOSPONSOR, 'http') 
                                     ? $sponsor->LOGOSPONSOR 
                                     : asset('storage/' . $sponsor->LOGOSPONSOR);
                             @endphp
-                            <img src="{{ $logoUrl }}" alt="{{ $sponsor->NOMSPONSORS }}" class="h-16 object-contain max-w-full">
+                            <img src="{{ $logoUrl }}" alt="{{ $sponsor->NOMSPONSORS }}" class="h-14 sm:h-16 object-contain max-w-full">
                         @else
-                            <span class="text-festival-dark font-semibold text-center text-sm">{{ $sponsor->NOMSPONSORS }}</span>
+                            <span class="text-festival-dark font-semibold text-center text-xs sm:text-sm">{{ $sponsor->NOMSPONSORS }}</span>
                         @endif
                     </div>
                 @empty
