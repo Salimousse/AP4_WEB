@@ -323,50 +323,6 @@
         </div>
 
         <!-- Section FAQ -->
-                                                sender: msg.sender,
-                                                content: msg.content
-                                            }));
-                                        }
-                                        this.scrollToBottom();
-                                    })
-                                    .catch(error => console.error('Erreur chargement messages:', error));
-                            },
-
-                            setupRealtime() {
-                                if (!window.Echo) {
-                                    console.warn('WebSocket non disponible');
-                                    return;
-                                }
-
-                                window.Echo.channel(`conversation.${this.conversationId}`)
-                                    .listen('.message.sent', (event) => {
-                                        const exists = this.messages.some(msg => msg.id === event.id || (msg.content === event.content && msg.sender === event.sender));
-                                        if (!exists) {
-                                            this.messages.push({
-                                                id: event.id,
-                                                sender: event.sender,
-                                                content: event.content
-                                            });
-                                            this.scrollToBottom();
-                                        }
-                                    });
-                            },
-
-                            scrollToBottom() {
-                                this.$nextTick(() => {
-                                    const chatBox = document.getElementById('chat-box');
-                                    if (chatBox) {
-                                        chatBox.scrollTop = chatBox.scrollHeight;
-                                    }
-                                });
-                            }
-                        }
-                    }
-                </script>
-            </div>
-        </div>
-
-        <!-- Section FAQ -->
         <div class="grid md:grid-cols-2 gap-8 mb-12 mt-8">
             
             <!-- FAQ Fréquentes -->
