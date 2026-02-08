@@ -69,142 +69,76 @@
 
             initChat() {
                 localStorage.setItem('chatConversationId', this.conversationId);
-                this.loadMessages();
                 this.setupRealtime();
             },
 
-            setupRealtime() {
-                // Écouter les messages temps réel pour cette conversation
-                if (!window.Echo) {
-                    console.warn('Echo pas encore prêt, nouvelle tentative dans 1s...');
-                    let attempts = 0;
-                    const interval = setInterval(() => {
-                        attempts++;
-                        if (window.Echo) {
-                            clearInterval(interval);
-                            console.log('✅ WebSocket connecté après ' + attempts + ' tentative(s)');
-                            this.connectEcho();
-                        } else if (attempts > 10) {
-                            clearInterval(interval);
-                            console.error('❌ WebSocket indisponible après 10 tentatives');
-                        }
-                    }, 1000);
-                    return;
+            async sendMessage() {
+                if (!this.userInput.trim()) return;
+
+                const message = this.userInput.trim();
+                this.userInput = '';
+
+                this.messages.push({
+                    id: Date.now(),
+                    sender: 'user',
+                    content: message
+                });
+                this.scrollToBottom();
+                this.isLoading = true;
+
+                try {
+                    const response = await fetch(`/chat/${this.conversationId}/send`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({ message, conversationId: this.conversationId })
+                    });
+
+                    if (!response.ok) throw new Error('Erreur réseau');
+
+                    const data = await response.json();
+                    if (data.reply && !this.messages.some(m => m.content === data.reply && m.sender === 'bot')) {
+                        this.messages.push({
+                            id: Date.now(),
+                            sender: 'bot',
+                            content: data.reply
+                        });
+                    }
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    this.messages.push({
+                        id: Date.now(),
+                        sender: 'bot',
+                        content: "Je ne peux pas répondre pour l'instant."
+                    });
+                } finally {
+                    this.isLoading = false;
+                    this.scrollToBottom();
                 }
-                this.connectEcho();
             },
 
-            connectEcho() {
-                console.log('Configuration WebSocket pour : conversation.' + this.conversationId);
+            setupRealtime() {
+                if (!window.Echo) return setTimeout(() => this.setupRealtime(), 1000);
 
-                // Use public channel for conversation so unauthenticated chat users receive messages
                 window.Echo.channel(`conversation.${this.conversationId}`)
                     .listen('.message.sent', (event) => {
-                        console.log('✓ Message WebSocket reçu:', event);
-
-                        // Éviter les doublons (par id OU par contenu+sender)
-                        const exists = this.messages.some(msg => msg.id === event.id || (msg.content === event.content && msg.sender === event.sender));
-                        if (!exists) {
+                        if (!this.messages.some(m => m.id === event.id)) {
                             this.messages.push({
                                 id: event.id,
                                 sender: event.sender,
                                 content: event.content
                             });
                             this.scrollToBottom();
-
-                            // Si c'est un message admin, arrêter le polling
-                            if (event.sender === 'admin') {
-                                this.stopPolling();
-                            }
-                        } else {
-                            console.log('Message déjà présent, ignoré');
                         }
-                    })
-                    .error((error) => {
-                        console.error('Erreur WebSocket sur le canal conversation.' + this.conversationId + ':', error);
-                    });
-
-                console.log('✓ Écouteur WebSocket configuré pour', this.conversationId);
-            },
-
-            loadMessages() {
-                axios.get(`/chat/${this.conversationId}/messages`)
-                    .then(res => {
-                        res.data.messages.forEach(msg => {
-                            // Éviter les doublons
-                            if (!this.messages.some(m => m.id === msg.id)) {
-                                this.messages.push({
-                                    id: msg.id,
-                                    sender: msg.sender,
-                                    content: msg.content
-                                });
-                            }
-                        });
-                        this.scrollToBottom();
-                    })
-                    .catch(err => console.log('Load messages error', err));
-            },
-
-            checkForAdminMessage() {
-                // Garder le polling comme fallback si WebSocket ne fonctionne pas
-                if (this.messages.length > 1) {
-                    axios.get(`/chat/${this.conversationId}/check`)
-                        .then(res => {
-                            if (res.data.message) {
-                                const exists = this.messages.some(msg => msg.content === res.data.message && msg.sender === 'admin');
-                                if (!exists) {
-                                    this.messages.push({ id: Date.now(), sender: 'admin', content: res.data.message });
-                                    this.scrollToBottom();
-                                }
-                            }
-                        })
-                        .catch(err => console.log('Check error', err))
-                        .finally(() => {
-                            // Polling moins fréquent maintenant qu'on a WebSocket
-                            setTimeout(() => this.checkForAdminMessage(), 10000); // Toutes les 10 secondes
-                        });
-                } else {
-                    setTimeout(() => this.checkForAdminMessage(), 10000);
-                }
-            },
-
-            stopPolling() {
-                // Cette méthode pourrait être appelée pour arrêter le polling
-                // Mais pour l'instant on le garde comme fallback
-            },
-
-            sendMessage() {
-                if (this.userInput.trim() === '') return;
-                const userMsg = this.userInput;
-                this.messages.push({ id: Date.now(), sender: 'user', content: userMsg });
-                this.userInput = '';
-                this.scrollToBottom();
-                this.isLoading = true;
-
-                axios.post(`/chat/${this.conversationId}/send`, { message: userMsg, conversationId: this.conversationId })
-                    .then(res => {
-                        // Afficher la réponse bot directement depuis la réponse HTTP
-                        if (res.data.reply) {
-                            const exists = this.messages.some(m => m.content === res.data.reply && m.sender === 'bot');
-                            if (!exists) {
-                                this.messages.push({ id: Date.now(), sender: 'bot', content: res.data.reply });
-                                this.scrollToBottom();
-                            }
-                        }
-                        this.isLoading = false;
-                    })
-                    .catch(err => {
-                        console.error('Erreur envoi message:', err);
-                        this.messages.push({ id: Date.now(), sender: 'bot', content: "Je ne peux pas répondre pour l'instant." });
-                        this.isLoading = false;
-                        this.scrollToBottom();
                     });
             },
 
             scrollToBottom() {
                 this.$nextTick(() => {
-                    const box = document.getElementById('chat-box');
-                    if(box) box.scrollTop = box.scrollHeight;
+                    const chatBox = document.getElementById('chat-box');
+                    if (chatBox) chatBox.scrollTop = chatBox.scrollHeight;
                 });
             }
         }

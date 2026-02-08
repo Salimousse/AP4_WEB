@@ -83,90 +83,13 @@ Route::get('/conditions-de-vente', [PageController::class, 'terms'])->name('term
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 
 // ========================================
-// 💬 ROUTES DU CHATBOT DE SUPPORT
+// 💬 ROUTES DU CHATBOT
 // ========================================
-// Ces routes gèrent la communication en temps réel avec le chatbot
-// Utilisées par le widget de chat sur la page /assistance
-
-/**
- * Envoyer un message utilisateur au chatbot
- * 
- * Endpoint: POST /chat/{conversationId}/send
- * 
- * Payload JSON:
- * {
- *   "message": "Quelle est le prix des places ?",
- *   "conversationId": "uuid-or-random-id"
- * }
- * 
- * Processus:
- * 1. Valide le message et crée/récupère une conversation
- * 2. Stocke le message utilisateur en base
- * 3. Détecte les mots-clés d'escalade (admin, humain, parler à)
- * 4. Appelle l'API Google Gemini pour générer une réponse
- * 5. Broadcast la réponse via WebSocket en temps réel
- * 6. Retourne la réponse et diffuse l'événement MessageSent
- * 
- * Response:
- * {
- *   "reply": "Texte de la réponse du bot"
- * }
- * 
- * Écouteur WebSocket (côté client):
- *   window.Echo.channel('conversation.' + conversationId)
- *     .listen('.message.sent', (message) => { ... })
- */
-Route::post('/chat/{conversationId}/send', [ChatbotController::class, 'sendMessage']);
-
-/**
- * Vérifier s'il y a une réponse admin
- * 
- * Endpoint: GET /chat/{conversationId}/check
- * 
- * Utilisé dans une boucle d'interrogation (polling) pour vérifier
- * si un admin humain a répondu à une demande d'escalade
- * 
- * Retour: null si pas de réponse, ou le contenu du message admin
- * 
- * Response:
- * {
- *   "message": "Voici la réponse de l'admin" ou null
- * }
- * 
- * Flux d'escalade:
- * 1. Utilisateur écrit "parler à un humain"
- * 2. ChatbotController détecte le mot-clé et envoie AdminRequested
- * 3. Frontend poll /check toutes les 2 secondes
- * 4. Quand un admin répond, /check retourne la réponse
- */
-Route::get('/chat/{conversationId}/check', [ChatbotController::class, 'checkMessage']);
-
-/**
- * Récupérer l'historique complet des messages
- * 
- * Endpoint: GET /chat/{conversationId}/messages
- * 
- * Retourne tous les messages de la conversation (user, bot, admin)
- * triés par date croissante.
- * 
- * Utilisé pour restaurer l'historique lors du chargement
- * (Actuellement DÉSACTIVÉ dans support.blade.php pour
- * éviter de montrer l'historique aux utilisateurs non-auth)
- * 
- * Response:
- * {
- *   "messages": [
- *     {
- *       "id": 1,
- *       "sender": "user|bot|admin",
- *       "content": "Texte du message",
- *       "created_at": "2024-01-15T10:30:00Z"
- *     },
- *     ...
- *   ]
- * }
- */
-Route::get('/chat/{conversationId}/messages', [ChatbotController::class, 'getMessages']);
+Route::group(['prefix' => 'chat/{conversationId}'], function () {
+    Route::post('send', [ChatbotController::class, 'sendMessage']);
+    Route::get('check', [ChatbotController::class, 'checkMessage']);
+    Route::get('messages', [ChatbotController::class, 'getMessages']);
+});
 
 Route::get('/festivals', [PageController::class, 'festivals'])->name('festivals');
 Route::get('/programme/{id}', [PageController::class, 'festival'])->name('programme');

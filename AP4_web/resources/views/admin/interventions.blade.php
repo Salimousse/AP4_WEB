@@ -4,16 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interventions Chatbot</title>
-    <script src="https://js.pusherapp.com/8.2/pusher.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    @if (file_exists(public_path('build/manifest.json')))
-        @vite(['resources/js/app.js', 'resources/js/admin-realtime.js'])
-    @else
-        {{-- Dev fallback to Vite dev server (no manifest) --}}
-        <script type="module" src="http://localhost:5173/resources/js/app.js"></script>
-        <script type="module" src="http://localhost:5173/resources/js/admin-realtime.js"></script>
-    @endif
+    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/admin-realtime.js'])
 </head>
 <body class="bg-gray-100 min-h-screen">
     <div class="container mx-auto px-4 py-8">

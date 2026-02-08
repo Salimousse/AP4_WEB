@@ -35,6 +35,9 @@ class InterventionController extends Controller
             'content' => $request->message,
         ]);
 
+        // Charger la relation conversation pour le broadcast
+        $adminMessage->conversation = $conversation;
+
         // Diffuser le message en temps réel
         broadcast(new MessageSent($adminMessage));
 
