@@ -22,6 +22,7 @@
                         </button>
                         <div x-show="open" @click.outside="open = false" x-transition class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-festival-dark/10 py-2 z-50">
                             <a href="{{ url('/dashboard') }}" class="block px-4 py-2 text-festival-dark hover:bg-festival-primary/10 transition">Tableau de bord</a>
+                            <a href="{{ route('page.mes-reservations') }}" class="block px-4 py-2 text-festival-dark hover:bg-festival-primary/10 transition">Mes Réservations</a>
                             <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-festival-dark hover:bg-festival-primary/10 transition">Profil</a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -51,6 +52,7 @@
             <a href="{{ route('festivals') }}" class="block px-4 py-2 text-festival-dark hover:bg-festival-light rounded transition">Programme</a>
             @auth
                 <a href="{{ url('/dashboard') }}" class="block px-4 py-2 text-festival-dark hover:bg-festival-light rounded transition">Tableau de bord</a>
+                <a href="{{ route('page.mes-reservations') }}" class="block px-4 py-2 text-festival-dark hover:bg-festival-light rounded transition">Mes Réservations</a>
                 <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-festival-dark hover:bg-festival-light rounded transition">Profil</a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
