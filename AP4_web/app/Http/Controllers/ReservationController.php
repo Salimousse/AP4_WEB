@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Log;
+use Illuminate\Support\Facades\Log;
 use Stripe\Stripe;
 use App\Models\Billet;
 use App\Models\Client;
@@ -57,7 +57,7 @@ class ReservationController extends Controller
         // On encode aussi les données dans l'URL comme backup
         $encodedData = base64_encode(json_encode($dataReservation));
 
-        Stripe::setApiKey(env('STRIPE_SECRET'));
+        Stripe::setApiKey(config('services.stripe.secret'));
 
         $session = Session::create([
             'payment_method_types' => ['card'],
