@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+
 /**
  * Class Client
  * 
@@ -33,7 +34,6 @@ use Illuminate\Notifications\Notifiable;
 class Client extends Authenticatable
 {
 	use HasFactory, Notifiable;
-
 	protected $table = 'CLIENT';
 	protected $primaryKey = 'IDPERS';
 	public $timestamps = false;

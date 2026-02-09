@@ -28,7 +28,7 @@ class ReservationController extends Controller
     public function store(Request $request)
     {
         // Validation
-        $request->validate(['id_manif' => 'required|exists:manifestations,IDMANIF']);
+        $request->validate(['id_manif' => 'required|exists:MANIFESTATIONS,IDMANIF']);
 
         $user = Auth::user();
         $manif = Manifestation::findOrFail($request->id_manif);
