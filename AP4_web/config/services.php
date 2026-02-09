@@ -62,4 +62,8 @@ return [
             'tolerance' => env('STRIPE_WEBHOOK_TOLERANCE', 300),
         ],
     ],
+
+    'google_ai' => [
+        'key' => env('GOOGLE_AI_KEY'),
+    ],
 ];

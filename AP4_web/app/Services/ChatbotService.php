@@ -106,7 +106,7 @@ class ChatbotService
      */
     private function generateBotReply(Conversation $conversation, string $userMessage): string
     {
-        $apiKey = env('GOOGLE_AI_KEY');
+        $apiKey = config('services.google_ai.key');
 
         // Utiliser l'IA si disponible
         if ($apiKey) {
