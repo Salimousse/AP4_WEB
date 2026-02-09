@@ -4,6 +4,10 @@ namespace App\Services;
 
 use App\Models\Conversation;
 use App\Models\Message;
+use App\Models\Festival;
+use App\Models\Manifestation;
+use App\Models\Artiste;
+use App\Models\Lieux;
 use App\Events\MessageSent;
 use App\Events\AdminRequested;
 use Illuminate\Support\Facades\Http;
@@ -157,20 +161,65 @@ class ChatbotService
     }
 
     /**
-     * Retourne le prompt système pour l'IA
+     * Retourne le prompt système pour l'IA avec données réelles de la BDD
      */
     private function getSystemPrompt(): string
     {
-        return "RÔLE: Tu es l'assistant du Festival Cale Sons 2026.
-TON: Enthousiaste, concis et utile.
-INFOS:
-- Date : Août 2026.
-- Thème : 'Terres de Légendes'.
-- Activités : Concerts, Ateliers.
-IMPORTANT:
-- Réponds UNIQUEMENT sur le festival
-- Réponds en français
-- Si tu ne sais pas, dis-le clairement";
+        try {
+            // 📚 Récupérer les données réelles
+            $festivals = Festival::with('manifestations')->get();
+            $manifestions = Manifestation::all();
+            $artistes = Artiste::all();
+            $lieux = Lieux::all();
+
+            // 🎭 Formater les festivals et manifestations
+            $festivalInfos = $festivals->map(function ($fest) {
+                $manifs = $fest->manifestations->map(function ($m) {
+                    return "  • {$m->NOMMANIF} - {$m->RESUMEMANIF} | Prix: " . ($m->PRIXMANIF ? "{$m->PRIXMANIF}€" : "GRATUIT") . " | Max: {$m->NBMAXPARTICIPANTMANIF} pers.";
+                })->join("\n");
+
+                return "**{$fest->THEMEFEST}** ({$fest->DATEDEBFEST->format('d/m/Y')} au {$fest->DATEFINFEST->format('d/m/Y')})\n{$manifs}";
+            })->join("\n\n");
+
+            // 🎤 Lister les artistes
+            $artistesInfos = $artistes->map(function ($a) {
+                return "{$a->PRENOMPERS} {$a->NOMPERS}";
+            })->join(", ");
+
+            // 📍 Lister les lieux
+            $lieuxInfos = $lieux->map(function ($l) {
+                return "• {$l->NOMLIEUX} ({$l->CAPACITEMAXLIEUX} places) - {$l->ADRESSELIEUX}";
+            })->join("\n");
+
+            return "🎵 RÔLE: Tu es l'assistant VIP du Festival Cale Sons 2026.
+👤 PERSONNALITÉ: Expert, enthousiaste, sympathique et ultra-compétent.
+
+📅 INFORMATIONS EN TEMPS RÉEL (Données actualisées de la BDD):
+
+FESTIVALS & MANIFESTATIONS:
+{$festivalInfos}
+
+🎤 ARTISTES CONFIRMÉS:
+{$artistesInfos}
+
+📍 LIEUX D'ACCUEIL:
+{$lieuxInfos}
+
+⚡ INSTRUCTIONS CRITIQUES:
+1. TU DOIS donner des infos DÉTAILLÉES et SPÉCIFIQUES du festival
+2. Toujours proposer au MINIMUM 2-3 événements ou tarifs
+3. JAMAIS dire 'Je ne sais pas', 'Je n\'ai pas d\'info' ou 'Demandez quand'
+4. PROPOSE des alternatives: 'Voulez-vous plutôt...'
+5. Mentionne les artistes, lieux et dates réels
+6. En français uniquement
+7. Sois proactif: fais des suggestions de questions à poser après
+8. Réponds UNIQUEMENT sur le Festival Cale Sons 2026";
+        } catch (\Exception $e) {
+            Log::error('Error fetching festival data', ['error' => $e->getMessage()]);
+            return "🎵 RÔLE: Tu es l'assistant du Festival Cale Sons 2026.
+TON: Enthousiaste, expert et très utile.
+IMPORTANT: Donne des réponses DÉTAILLÉES, JAMAIS 'je ne sais pas'. En français uniquement.";
+        }
     }
 
     /**
