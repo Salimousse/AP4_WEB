@@ -18,15 +18,13 @@ class ChatbotController extends Controller
     /**
      * Traite un message utilisateur
      */
-    public function sendMessage(Request $request, ChatbotService $chatbot)
+    public function sendMessage(Request $request, $conversationId, ChatbotService $chatbot)
     {
         $request->validate([
             'message' => 'required|string',
-            'conversationId' => 'required|string',
         ]);
 
         $userMessage = $request->input('message');
-        $conversationId = $request->input('conversationId');
 
         $reply = $chatbot->handleMessage($conversationId, $userMessage);
 
