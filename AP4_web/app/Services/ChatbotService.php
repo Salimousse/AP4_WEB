@@ -123,12 +123,128 @@ class ChatbotService
     }
 
     /**
-     * Appelle l'API Google Gemini
+     * Détecte si l'utilisateur demande un festival/manifestation spécifique
+     * et prépare un prompt optimisé
+     */
+    private function buildOptimizedPrompt(string $userMessage): string
+    {
+        $userLower = strtolower($userMessage);
+        
+        try {
+            // 🔍 Détection: parle-t-il d'un festival ou manifestation spécifique?
+            $festivals = Festival::with('manifestations')->get();
+            $manifestations = Manifestation::all();
+            
+            $relevantData = null;
+            
+            // Chercher si le message mentionne un festival spécifique
+            foreach ($festivals as $fest) {
+                if (str_contains($userLower, strtolower($fest->THEMEFEST))) {
+                    // 🎯 Utilisateur parle d'un festival spécifique
+                    $manifs = $fest->manifestations->map(function ($m) {
+                        $prix = $m->PRIXMANIF ? $m->PRIXMANIF . '€' : 'GRATUIT';
+                        return "  • {$m->NOMMANIF} - {$m->RESUMEMANIF} | {$prix} | {$m->NBMAXPARTICIPANTMANIF} places";
+                    })->join("\n");
+                    
+                    $relevantData = "FESTIVAL: {$fest->THEMEFEST} ({$fest->DATEDEBFEST->format('d/m/Y')} au {$fest->DATEFINFEST->format('d/m/Y')})\n\nMANIFESTATIONS:\n{$manifs}";
+                    break;
+                }
+            }
+            
+            // Chercher si le message mentionne une manifestation spécifique
+            if (!$relevantData) {
+                foreach ($manifestations as $manif) {
+                    if (str_contains($userLower, strtolower($manif->NOMMANIF))) {
+                        $fest = $manif->festival;
+                        $relevantData = "MANIFESTATION: {$manif->NOMMANIF}\nFestival: {$fest->THEMEFEST}\nDescription: {$manif->RESUMEMANIF}\nPrix: " . ($manif->PRIXMANIF ? "{$manif->PRIXMANIF}€" : "GRATUIT") . "\nPlaces: {$manif->NBMAXPARTICIPANTMANIF}";
+                        break;
+                    }
+                }
+            }
+            
+            // Si on a trouvé des données spécifiques, utiliser un prompt court
+            if ($relevantData) {
+                return "🎵 Tu es l'assistant du Festival Cale Sons 2026. Réponds UNIQUEMENT sur le festival en français. Jamais dire 'je ne sais pas'.
+
+DONNÉES PERTINENTES:
+{$relevantData}
+
+Question: {$userMessage}";
+            }
+            
+            // Sinon, envoyer les données complètes mais optimisées
+            return $this->buildCompletePrompt();
+            
+        } catch (\Exception $e) {
+            Log::error('Error building optimized prompt', ['error' => $e->getMessage()]);
+            return "🎵 Tu es l'assistant du Festival Cale Sons 2026. Réponds UNIQUEMENT sur le festival en français. Jamais dire 'je ne sais pas'.";
+        }
+    }
+
+    /**
+     * Construit le prompt complet avec toutes les données
+     */
+    private function buildCompletePrompt(): string
+    {
+        try {
+            $festivals = Festival::with('manifestations')->get();
+            $artistes = Artiste::all();
+            $lieux = Lieux::all();
+
+            // 🎭 Formater les festivals et manifestations
+            $festivalInfos = $festivals->map(function ($fest) {
+                $manifs = $fest->manifestations->map(function ($m) {
+                    $prix = $m->PRIXMANIF ? $m->PRIXMANIF . '€' : 'GRATUIT';
+                    return "  • {$m->NOMMANIF} - {$m->RESUMEMANIF} | {$prix} | {$m->NBMAXPARTICIPANTMANIF} pers.";
+                })->join("\n");
+
+                return "**{$fest->THEMEFEST}** ({$fest->DATEDEBFEST->format('d/m/Y')} au {$fest->DATEFINFEST->format('d/m/Y')})\n{$manifs}";
+            })->join("\n\n");
+
+            // 🎤 Lister les artistes
+            $artistesInfos = $artistes->map(function ($a) {
+                return "{$a->PRENOMPERS} {$a->NOMPERS}";
+            })->join(", ");
+
+            // 📍 Lister les lieux
+            $lieuxInfos = $lieux->map(function ($l) {
+                return "• {$l->NOMLIEUX} ({$l->CAPACITEMAXLIEUX} places) - {$l->ADRESSELIEUX}";
+            })->join("\n");
+
+            return "🎵 RÔLE: Tu es l'assistant VIP du Festival Cale Sons 2026.
+👤 PERSONNALITÉ: Expert, enthousiaste, sympathique et ultra-compétent.
+
+📅 INFORMATIONS EN TEMPS RÉEL:
+
+FESTIVALS & MANIFESTATIONS:
+{$festivalInfos}
+
+🎤 ARTISTES:
+{$artistesInfos}
+
+📍 LIEUX:
+{$lieuxInfos}
+
+⚡ INSTRUCTIONS:
+1. Donne des infos DÉTAILLÉES et SPÉCIFIQUES
+2. JAMAIS dire 'Je ne sais pas'
+3. En français uniquement
+4. Propose des alternatives
+5. Réponds UNIQUEMENT sur le Festival Cale Sons 2026";
+        } catch (\Exception $e) {
+            Log::error('Error building complete prompt', ['error' => $e->getMessage()]);
+            return "🎵 Tu es l'assistant du Festival Cale Sons 2026. Réponds UNIQUEMENT sur le festival en français.";
+        }
+    }
+
+    /**
+     * Appelle l'API Google Gemini avec prompt optimisé
      */
     private function callGeminiAPI(string $apiKey, string $userMessage): string
     {
         try {
-            $systemPrompt = $this->getSystemPrompt();
+            // 🎯 Utiliser un prompt optimisé selon le contexte
+            $systemPrompt = $this->buildOptimizedPrompt($userMessage);
             $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={$apiKey}";
 
             $response = Http::post($url, [
@@ -157,68 +273,6 @@ class ChatbotService
         } catch (\Exception $e) {
             Log::error('Chatbot Exception', ['error' => $e->getMessage()]);
             return $this->fallbackResponses->generate($userMessage);
-        }
-    }
-
-    /**
-     * Retourne le prompt système pour l'IA avec données réelles de la BDD
-     */
-    private function getSystemPrompt(): string
-    {
-        try {
-            // 📚 Récupérer les données réelles
-            $festivals = Festival::with('manifestations')->get();
-            $manifestions = Manifestation::all();
-            $artistes = Artiste::all();
-            $lieux = Lieux::all();
-
-            // 🎭 Formater les festivals et manifestations
-            $festivalInfos = $festivals->map(function ($fest) {
-                $manifs = $fest->manifestations->map(function ($m) {
-                    return "  • {$m->NOMMANIF} - {$m->RESUMEMANIF} | Prix: " . ($m->PRIXMANIF ? "{$m->PRIXMANIF}€" : "GRATUIT") . " | Max: {$m->NBMAXPARTICIPANTMANIF} pers.";
-                })->join("\n");
-
-                return "**{$fest->THEMEFEST}** ({$fest->DATEDEBFEST->format('d/m/Y')} au {$fest->DATEFINFEST->format('d/m/Y')})\n{$manifs}";
-            })->join("\n\n");
-
-            // 🎤 Lister les artistes
-            $artistesInfos = $artistes->map(function ($a) {
-                return "{$a->PRENOMPERS} {$a->NOMPERS}";
-            })->join(", ");
-
-            // 📍 Lister les lieux
-            $lieuxInfos = $lieux->map(function ($l) {
-                return "• {$l->NOMLIEUX} ({$l->CAPACITEMAXLIEUX} places) - {$l->ADRESSELIEUX}";
-            })->join("\n");
-
-            return "🎵 RÔLE: Tu es l'assistant VIP du Festival Cale Sons 2026.
-👤 PERSONNALITÉ: Expert, enthousiaste, sympathique et ultra-compétent.
-
-📅 INFORMATIONS EN TEMPS RÉEL (Données actualisées de la BDD):
-
-FESTIVALS & MANIFESTATIONS:
-{$festivalInfos}
-
-🎤 ARTISTES CONFIRMÉS:
-{$artistesInfos}
-
-📍 LIEUX D'ACCUEIL:
-{$lieuxInfos}
-
-⚡ INSTRUCTIONS CRITIQUES:
-1. TU DOIS donner des infos DÉTAILLÉES et SPÉCIFIQUES du festival
-2. Toujours proposer au MINIMUM 2-3 événements ou tarifs
-3. JAMAIS dire 'Je ne sais pas', 'Je n\'ai pas d\'info' ou 'Demandez quand'
-4. PROPOSE des alternatives: 'Voulez-vous plutôt...'
-5. Mentionne les artistes, lieux et dates réels
-6. En français uniquement
-7. Sois proactif: fais des suggestions de questions à poser après
-8. Réponds UNIQUEMENT sur le Festival Cale Sons 2026";
-        } catch (\Exception $e) {
-            Log::error('Error fetching festival data', ['error' => $e->getMessage()]);
-            return "🎵 RÔLE: Tu es l'assistant du Festival Cale Sons 2026.
-TON: Enthousiaste, expert et très utile.
-IMPORTANT: Donne des réponses DÉTAILLÉES, JAMAIS 'je ne sais pas'. En français uniquement.";
         }
     }
 
