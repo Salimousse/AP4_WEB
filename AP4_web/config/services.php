@@ -49,6 +49,6 @@ return [
     'facebook' => [
         'client_id' => env('FACEBOOK_CLIENT_ID'),
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),
-        'redirect' => 'http://localhost:8000/connect/facebook/check',
+        'redirect' => env('FACEBOOK_REDIRECT_URL'),
     ],
 ];
