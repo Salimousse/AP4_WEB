@@ -58,7 +58,11 @@ class ChatbotService
 
         // Transmettre l'objet conversation complet (déjà en mémoire)
         $userMsg->conversation = $conversation;
-        broadcast(new MessageSent($userMsg));
+        try {
+            broadcast(new MessageSent($userMsg));
+        } catch (\Exception $e) {
+            Log::warning('Broadcast MessageSent failed', ['error' => $e->getMessage()]);
+        }
 
         // 3️⃣ Vérifier escalade
         if ($this->escalationDetector->shouldEscalate($userMessage)) {
@@ -80,7 +84,11 @@ class ChatbotService
     private function handleEscalation(Conversation $conversation): string
     {
         $conversation->update(['admin_active' => true]);
-        broadcast(new AdminRequested($conversation));
+        try {
+            broadcast(new AdminRequested($conversation));
+        } catch (\Exception $e) {
+            Log::warning('Broadcast AdminRequested failed', ['error' => $e->getMessage()]);
+        }
 
         $reply = $this->escalationDetector->getEscalationMessage();
         $this->saveBotMessage($conversation, $reply);
@@ -287,6 +295,10 @@ FESTIVALS & MANIFESTATIONS:
             'content' => $content,
         ]);
 
-        broadcast(new MessageSent($botMsg));
+        try {
+            broadcast(new MessageSent($botMsg));
+        } catch (\Exception $e) {
+            Log::warning('Broadcast bot MessageSent failed', ['error' => $e->getMessage()]);
+        }
     }
 }
