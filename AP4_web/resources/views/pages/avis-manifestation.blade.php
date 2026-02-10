@@ -51,7 +51,7 @@
                         @if($totalAvis == 0)
                             <div class="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
                                 <p class="text-blue-700 text-sm">
-                                    ℹ️ Aucun avis pour le moment. Soyez le premier à partager votre expérience !
+                                    Aucun avis pour le moment. Soyez le premier à partager votre expérience !
                                 </p>
                             </div>
                         @endif

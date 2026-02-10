@@ -36,7 +36,7 @@
                     <div class="h-48 bg-gradient-to-br from-festival-primary to-festival-secondary relative flex items-center justify-center">
                         <div class="absolute inset-0 bg-black opacity-20"></div>
                         <div class="relative z-10 text-center px-6">
-                            <div class="text-white text-6xl mb-3">🎪</div>
+                            <div class="text-white text-6xl mb-3"></div>
                             <h2 class="text-3xl font-black text-white uppercase tracking-wide drop-shadow-lg">
                                 {{ $festival->THEMEFEST }}
                             </h2>
