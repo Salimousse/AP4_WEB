@@ -10,7 +10,7 @@
             
             @if($reservations->isEmpty())
                 <div class="bg-white overflow-hidden shadow-lg rounded-2xl p-6 sm:p-8 text-center border border-festival-dark/10">
-                    <div class="text-5xl mb-4">🎫</div>
+                    <div class="text-5xl mb-4"></div>
                     <p class="text-festival-dark/70 mb-4 text-lg">Vous n'avez aucune réservation pour le moment.</p>
                     <a href="{{ route('festivals') }}" class="inline-block bg-festival-primary text-white hover:bg-festival-secondary font-bold py-3 px-6 rounded-lg transition">
                         Voir la programmation
@@ -31,7 +31,7 @@
                                         @endif
                                     </div>
                                 @else
-                                    <span class="text-white text-xs sm:text-sm text-center font-bold">⏳ En attente<br>de paiement</span>
+                                    <span class="text-white text-xs sm:text-sm text-center font-bold">En attente<br>de paiement</span>
                                 @endif
                             </div>
 
@@ -40,9 +40,9 @@
                                     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-3">
                                         <h3 class="text-lg sm:text-xl font-bold text-festival-dark">{{ $resa->manifestation->NOMMANIF }}</h3>
                                         @if($resa->billet && ($resa->billet->IDTYPEPAIEMENT == 1 || $resa->billet->IDTYPEPAIEMENT == 0))
-                                            <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full font-bold w-fit">✅ PAYÉ</span>
+                                            <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full font-bold w-fit">PAYÉ</span>
                                         @else
-                                            <span class="bg-yellow-100 text-yellow-700 text-xs px-3 py-1 rounded-full font-bold w-fit">⏳ EN ATTENTE</span>
+                                            <span class="bg-yellow-100 text-yellow-700 text-xs px-3 py-1 rounded-full font-bold w-fit">EN ATTENTE</span>
                                         @endif
                                     </div>
                                     <p class="text-festival-dark/60 text-xs sm:text-sm mb-2">
@@ -56,12 +56,12 @@
                                 <div class="mt-4 pt-4 border-t border-festival-dark/10 flex flex-col sm:flex-row gap-3">
                                     @if($resa->billet)
                                         <a href="{{ route('reservation.success', $resa->billet->IDBILLET) }}" class="flex-1 bg-festival-primary text-white text-center py-2 rounded-lg text-sm font-bold hover:bg-festival-secondary transition">
-                                            📋 Voir le Billet
+                                            Voir le Billet
                                         </a>
                                         
                                         @if($resa->manifestation->PRIXMANIF > 0 && !$resa->billet->IDTYPEPAIEMENT)
                                             <a href="{{ route('paiement.checkout', $resa->billet->IDBILLET) }}" class="flex-1 bg-yellow-500 text-white text-center py-2 rounded-lg text-sm font-bold hover:bg-yellow-600 transition">
-                                                💳 Payer
+                                                Payer
                                             </a>
                                         @endif
                                     @endif

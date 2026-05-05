@@ -22,12 +22,6 @@
 
                 <!-- Content Section -->
                 <div class="prose prose-lg max-w-none">
-                    <p class="text-sm text-gray-500 uppercase tracking-wide mb-3">Eyebrow text to label this content</p>
-                    <h2 class="text-3xl font-bold text-gray-900 mb-6">A headline for some text</h2>
-                    <p class="text-gray-700 leading-relaxed mb-8">
-                        On the one hand, all you need to do is say what you mean, in your words, in your voice. On the other, there are so many rules to consider! Are you thinking of keywords you should rank for? Are you including links in your text to authoritative sources? Things that we've built for your own website, which helps boost your SEO? That's what you've written easy to scan? There's a theory that people read in an F-shape pattern, and that this should influence how you structure content on your website. Lots of this and outs—it's no wonder writers rule the world.
-                    </p>
-
                     <h3 class="text-2xl font-bold text-gray-900 mb-4 mt-12">Collecte des données</h3>
                     <p class="text-gray-700 leading-relaxed mb-6">
                         Nous collectons uniquement les données nécessaires au bon fonctionnement de notre service. Ces données incluent votre nom, adresse email, et les informations fournies lors de votre inscription via les services tiers (Google, Microsoft, Facebook).

@@ -46,7 +46,7 @@
                         @if(Auth::user()->google_id)
                             <div class="flex items-center gap-3">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    ✅ Connecté
+                                    Connecté
                                 </span>
                                 <form method="POST" action="{{ route('auth.google.unlink') }}" onsubmit="return confirm('Voulez-vous vraiment délier ce compte Google ?');">
                                     @csrf
@@ -82,7 +82,7 @@
                         @if(Auth::user()->microsoft_id)
                             <div class="flex items-center gap-3">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    ✅ Connecté
+                                    Connecté
                                 </span>
                                 <form method="POST" action="{{ route('auth.microsoft.unlink') }}" onsubmit="return confirm('Voulez-vous vraiment délier ce compte Microsoft ?');">
                                     @csrf
@@ -115,7 +115,7 @@
                         @if(Auth::user()->facebook_id)
                             <div class="flex items-center gap-3">
                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    ✅ Connecté
+                                    Connecté
                                 </span>
                                 <form method="POST" action="{{ route('auth.facebook.unlink') }}" onsubmit="return confirm('Voulez-vous vraiment délier ce compte Facebook ?');">
                                     @csrf

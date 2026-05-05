@@ -14,7 +14,7 @@
 
     <section class="h-[300px] bg-gradient-to-br from-festival-primary to-festival-secondary flex items-center justify-center">
         <div class="text-center text-white px-6">
-            <h1 class="text-4xl font-bold mb-2">📝 Donnez votre avis</h1>
+            <h1 class="text-4xl font-bold mb-2">Donnez votre avis</h1>
             <p class="text-lg">Aidez d'autres personnes à découvrir cette manifestation</p>
         </div>
     </section>
@@ -33,8 +33,8 @@
                                  class="w-full h-full object-cover">
                         @else
                             <div class="w-full h-full flex items-center justify-center text-3xl">
-                                🎭
-                            </div>
+                                 
+                             </div>
                         @endif
                     </div>
 
@@ -61,9 +61,9 @@
             <!-- Affichage si avis existant -->
             @if($avisExistant)
                 <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                    <p class="text-blue-700 text-sm">
-                        ✏️ <strong>Vous avez déjà donné un avis.</strong> Vous pouvez le modifier ci-dessous.
-                    </p>
+                        <p class="text-blue-700 text-sm">
+                         <strong>Vous avez déjà donné un avis.</strong> Vous pouvez le modifier ci-dessous.
+                     </p>
                 </div>
             @endif
 
@@ -75,7 +75,7 @@
                     <!-- Note -->
                     <div class="mb-6">
                         <label class="block text-lg font-bold text-festival-dark mb-3">
-                            ⭐ Votre note
+                            Votre note
                         </label>
                         
                         <div class="flex gap-3" id="rating-container">
@@ -85,7 +85,7 @@
                                        {{ old('note', $avisExistant?->NOTEAVIS) == $i ? 'checked' : '' }}>
                                 <label for="note-{{ $i }}" class="cursor-pointer text-4xl transition-transform hover:scale-110 star-label" 
                                        data-value="{{ $i }}">
-                                    ⭐
+                                    ★
                                 </label>
                             @endfor
                         </div>
@@ -102,7 +102,7 @@
                     <!-- Commentaire -->
                     <div class="mb-6">
                         <label for="commentaire" class="block text-lg font-bold text-festival-dark mb-3">
-                            💬 Votre commentaire
+                            Votre commentaire
                         </label>
                         
                         <textarea name="commentaire" id="commentaire" rows="5" 
@@ -126,7 +126,7 @@
                         </a>
                         <button type="submit" 
                                 class="flex-1 bg-festival-primary text-white font-bold rounded-lg px-6 py-3 hover:bg-festival-secondary transition">
-                            {{ $avisExistant ? '✏️ Mettre à jour mon avis' : '✅ Publier mon avis' }}
+                            {{ $avisExistant ? 'Mettre à jour mon avis' : 'Publier mon avis' }}
                         </button>
                     </div>
                 </form>
@@ -136,7 +136,7 @@
             <div class="text-center mt-8">
                 <a href="{{ route('avis.index', $billet->IDMANIF) }}" 
                    class="inline-block text-festival-primary font-bold hover:underline">
-                    📊 Voir tous les avis de cette manifestation →
+                    Voir tous les avis de cette manifestation →
                 </a>
             </div>
 
@@ -145,12 +145,12 @@
 
     @include('layouts.footer')
 
-    <script>
+                    <script>
         // Gestion des étoiles interactives
         const labels = document.querySelectorAll('.star-label');
         const container = document.getElementById('rating-container');
         const radios = document.querySelectorAll('input[name="note"]');
-
+ 
         labels.forEach(label => {
             label.addEventListener('click', function() {
                 const value = this.dataset.value;
@@ -158,20 +158,20 @@
                 updateStars(value);
             });
         });
-
+ 
         function updateStars(rating) {
             labels.forEach(label => {
                 const value = label.dataset.value;
                 if (value <= rating) {
-                    label.textContent = '⭐';
+                    label.textContent = '★';
                     label.classList.remove('opacity-30');
                 } else {
-                    label.textContent = '⭐';
+                    label.textContent = '★';
                     label.classList.add('opacity-30');
                 }
             });
         }
-
+ 
         // Initialiser les étoiles au chargement
         const checkedValue = document.querySelector('input[name="note"]:checked')?.value;
         if (checkedValue) {
@@ -179,7 +179,7 @@
         } else {
             labels.forEach(label => label.classList.add('opacity-30'));
         }
-
+ 
         // Compteur de caractères
         const commentaire = document.getElementById('commentaire');
         const charCount = document.getElementById('char-count');
@@ -188,7 +188,7 @@
             const remaining = 1000 - this.value.length;
             charCount.textContent = remaining;
         });
-
+ 
         // Initialiser le compteur
         charCount.textContent = 1000 - (commentaire.value?.length || 0);
     </script>

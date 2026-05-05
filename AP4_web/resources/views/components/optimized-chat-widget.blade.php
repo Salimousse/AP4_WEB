@@ -48,7 +48,7 @@
 
 <script>
     /**
-     * 💬 Composant Chat Optimisé
+     * Composant Chat Optimisé
      * 
      * Utilise:
      * - ChatAdapter pour abstraire le WebSocket

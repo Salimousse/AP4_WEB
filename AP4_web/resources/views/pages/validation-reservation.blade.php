@@ -43,7 +43,7 @@
 
             <!-- Détails de la réservation -->
             <div class="border-t border-gray-200 pt-6 space-y-4">
-                <h2 class="text-xl font-bold text-gray-800 mb-4"> Détails de votre réservation</h2>
+                 <h2 class="text-xl font-bold text-gray-800 mb-4">Détails de votre réservation</h2>
                 
                 <div class="grid md:grid-cols-2 gap-4">
                     <div>
@@ -58,7 +58,7 @@
                 </div>
 
                 <div class="bg-blue-50 p-4 rounded-lg">
-                    <p class="text-sm text-blue-600 font-semibold mb-2"> Festival</p>
+                     <p class="text-sm text-blue-600 font-semibold mb-2">Festival</p>
                     <p class="font-bold text-lg">{{ $festival->THEMEFEST }}</p>
                     <p class="text-sm text-gray-600">
                         Du {{ \Carbon\Carbon::parse($festival->DATEDEBFEST)->format('d/m/Y') }} 
@@ -67,11 +67,11 @@
                 </div>
 
                 <div class="bg-purple-50 p-4 rounded-lg">
-                    <p class="text-sm text-purple-600 font-semibold mb-2"> Manifestation</p>
+                     <p class="text-sm text-purple-600 font-semibold mb-2">Manifestation</p>
                     <p class="font-bold text-lg">{{ $manifestation->NOMMANIF }}</p>
                     <div class="text-sm text-gray-600 mt-2">
-                        <p>📅 {{ \Carbon\Carbon::parse($manifestation->DATEMANIF)->format('d/m/Y') }} à {{ $manifestation->HEUREDEBMANIF }}</p>
-                        <p>📍 {{ $manifestation->LIEUMANIF }}</p>
+                         <p>{{ \Carbon\Carbon::parse($manifestation->DATEMANIF)->format('d/m/Y') }} à {{ $manifestation->HEUREDEBMANIF }}</p>
+                         <p>{{ $manifestation->LIEUMANIF }}</p>
                     </div>
                 </div>
 
@@ -91,7 +91,7 @@
             <div class="mt-8 pt-6 border-t border-gray-200 flex flex-col md:flex-row gap-4">
                 <a href="{{ route('reservation.success', ['idBillet' => $billet->IDBILLET]) }}" 
                    class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-lg text-center transition duration-200 shadow-lg hover:shadow-xl">
-                    🎫 Voir mon billet complet
+                     Voir mon billet complet
                 </a>
                 
                 <a href="{{ route('page.mes-reservations') }}" 

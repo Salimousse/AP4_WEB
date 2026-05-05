@@ -65,7 +65,7 @@
         <x-modal name="confirm-user-deletion-step1" focusable>
             <div class="p-6">
                 <h2 class="text-lg font-medium text-festival-dark">
-                    {{ __('⚠️ Attention !') }}
+                    {{ __('Attention !') }}
                 </h2>
 
                 <p class="mt-3 text-sm text-festival-dark/70">

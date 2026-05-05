@@ -17,7 +17,7 @@
 
     <section class="h-[400px] bg-gradient-to-br from-festival-primary to-festival-secondary flex items-center justify-center">
         <div class="text-center text-white px-6">
-            <h1 class="text-5xl font-bold mb-4">🎧 Assistance & Support</h1>
+            <h1 class="text-5xl font-bold mb-4">Assistance & Support</h1>
             <p class="text-xl">Nous sommes là pour vous aider !</p>
         </div>
     </section>
@@ -34,7 +34,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.955 8.955 0 01-2.563-.37l-3.687 1.54A1 1 0 016 20.31V17.94A8 8 0 1121 12z"></path>
                         </svg>
                     </div>
-                    <h2 class="text-3xl font-bold text-festival-dark mb-3">💬 Chat en Direct</h2>
+                    <h2 class="text-3xl font-bold text-festival-dark mb-3">Chat en Direct</h2>
                     <p class="text-festival-dark/70">Discutez avec notre équipe support en temps réel</p>
                 </div>
 
@@ -52,9 +52,9 @@
             <!-- FAQ Fréquentes -->
             <div class="bg-white rounded-2xl shadow-lg p-8 border border-festival-dark/5">
                 <h2 class="text-2xl font-bold text-festival-dark mb-6 flex items-center">
-                    <span class="w-8 h-8 bg-festival-primary/10 rounded-full flex items-center justify-center mr-3">
-                        ❓
-                    </span>
+                         <span class="w-8 h-8 bg-festival-primary/10 rounded-full flex items-center justify-center mr-3">
+                         ?
+                     </span>
                     Questions Fréquentes
                 </h2>
 
@@ -106,9 +106,9 @@
             <!-- Aide rapide -->
             <div class="bg-white rounded-2xl shadow-lg p-8 border border-festival-dark/5">
                 <h2 class="text-2xl font-bold text-festival-dark mb-6 flex items-center">
-                    <span class="w-8 h-8 bg-festival-primary/10 rounded-full flex items-center justify-center mr-3">
-                        ⚡
-                    </span>
+                         <span class="w-8 h-8 bg-festival-primary/10 rounded-full flex items-center justify-center mr-3">
+                         
+                     </span>
                     Aide Rapide
                 </h2>
 
@@ -116,8 +116,8 @@
                     <a href="{{ route('page.mes-reservations') }}" class="block p-4 bg-festival-light hover:bg-festival-light/80 rounded-lg transition duration-200 group border border-festival-primary/10">
                         <div class="flex items-center">
                             <div class="w-10 h-10 bg-festival-primary/20 rounded-full flex items-center justify-center mr-4 group-hover:bg-festival-primary/30">
-                                🎫
-                            </div>
+                                 
+                             </div>
                             <div>
                                 <h3 class="font-semibold text-festival-dark">Mes Billets</h3>
                                 <p class="text-sm text-festival-dark/70">Consulter mes réservations</p>
@@ -128,8 +128,8 @@
                     <a href="{{ route('festivals') }}" class="block p-4 bg-festival-light hover:bg-festival-light/80 rounded-lg transition duration-200 group border border-festival-primary/10">
                         <div class="flex items-center">
                             <div class="w-10 h-10 bg-festival-primary/20 rounded-full flex items-center justify-center mr-4 group-hover:bg-festival-primary/30">
-                                🎪
-                            </div>
+                                 
+                             </div>
                             <div>
                                 <h3 class="font-semibold text-festival-dark">Festivals</h3>
                                 <p class="text-sm text-festival-dark/70">Découvrir les événements</p>
@@ -140,8 +140,8 @@
                     <a href="{{ route('contact') }}" class="block p-4 bg-festival-light hover:bg-festival-light/80 rounded-lg transition duration-200 group border border-festival-primary/10">
                         <div class="flex items-center">
                             <div class="w-10 h-10 bg-festival-primary/20 rounded-full flex items-center justify-center mr-4 group-hover:bg-festival-primary/30">
-                                📞
-                            </div>
+                                 
+                             </div>
                             <div>
                                 <h3 class="font-semibold text-festival-dark">Contact Direct</h3>
                                 <p class="text-sm text-festival-dark/70">Formulaire de contact</p>

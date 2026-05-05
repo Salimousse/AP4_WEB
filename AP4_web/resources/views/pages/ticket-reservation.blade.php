@@ -64,15 +64,15 @@
                         <p class="text-festival-dark/60 text-xs uppercase font-bold mb-1">Statut</p>
                         @if($billet->IDTYPEPAIEMENT == 1)
                             <span class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold border border-green-300">
-                                ✅ PAYÉ (CB)
+                                PAYÉ (CB)
                             </span>
                         @elseif($billet->IDTYPEPAIEMENT == 0)
                             <span class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold border border-green-300">
-                                ✅ PAYÉ (Gratuit)
+                                PAYÉ (Gratuit)
                             </span>
                         @else
                             <span class="inline-block bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-bold border border-yellow-300">
-                                ⏳ EN ATTENTE
+                                EN ATTENTE
                             </span>
                         @endif
                     </div>
@@ -85,11 +85,11 @@
                     </button>
                     
                     <a href="{{ route('avis.form', ['idBillet' => $billet->IDBILLET]) }}" class="block text-center bg-festival-primary hover:bg-festival-secondary text-white font-bold py-2.5 px-4 rounded-lg transition text-sm no-underline">
-                        📝 Ajouter un avis
+                        Ajouter un avis
                     </a>
                     
                     <a href="{{ route('avis.index', ['idManif' => $billet->IDMANIF]) }}" class="block text-center bg-festival-primary/10 hover:bg-festival-primary/20 text-festival-dark font-bold py-2.5 px-4 rounded-lg transition text-sm no-underline">
-                        📊 Voir les avis
+                        Voir les avis
                     </a>
                     
                     <a href="{{ route('festivals') }}" class="block text-center text-xs text-festival-dark/60 hover:text-festival-dark pt-2">

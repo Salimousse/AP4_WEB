@@ -14,7 +14,7 @@
 
     <section class="h-[300px] bg-gradient-to-br from-festival-primary to-festival-secondary flex items-center justify-center">
         <div class="text-center text-white px-6">
-            <h1 class="text-4xl font-bold mb-2">📊 Avis des participants</h1>
+            <h1 class="text-4xl font-bold mb-2">Avis des participants</h1>
             <p class="text-lg">Découvrez les retours des personnes qui ont assisté à cette manifestation</p>
         </div>
     </section>
@@ -32,9 +32,9 @@
                         <div class="flex gap-1 mt-2">
                             @for($i = 1; $i <= 5; $i++)
                                 @if($i <= round($noteMoyenne))
-                                    <span class="text-2xl">⭐</span>
+                                    <span class="text-2xl">★</span>
                                 @else
-                                    <span class="text-2xl opacity-20">⭐</span>
+                                    <span class="text-2xl opacity-20">★</span>
                                 @endif
                             @endfor
                         </div>
@@ -74,9 +74,9 @@
                                 <div class="w-16 flex items-center gap-1">
                                     @for($i = 1; $i <= 5; $i++)
                                         @if($i <= $note)
-                                            <span class="text-lg">⭐</span>
+                                            <span class="text-lg">★</span>
                                         @else
-                                            <span class="text-lg opacity-20">⭐</span>
+                                            <span class="text-lg opacity-20">★</span>
                                         @endif
                                     @endfor
                                 </div>
@@ -107,9 +107,9 @@
                                 <div class="flex gap-2 items-center mb-2">
                                     @for($i = 1; $i <= 5; $i++)
                                         @if($i <= $avi->NOTEAVIS)
-                                            <span class="text-xl">⭐</span>
+                                            <span class="text-xl">★</span>
                                         @else
-                                            <span class="text-xl opacity-30">⭐</span>
+                                            <span class="text-xl opacity-30">★</span>
                                         @endif
                                     @endfor
                                 </div>
@@ -136,7 +136,7 @@
                     </div>
                 @empty
                     <div class="bg-white rounded-2xl shadow-lg p-12 border border-festival-dark/5 text-center">
-                        <div class="text-5xl mb-4">📝</div>
+                        <div class="text-5xl mb-4"></div>
                         <p class="text-festival-dark/70 text-lg">
                             Aucun avis n'a été publié pour le moment.
                         </p>

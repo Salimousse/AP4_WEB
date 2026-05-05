@@ -76,19 +76,19 @@
 
                             @if($concerts > 0)
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-festival-primary/10 text-festival-primary">
-                                🎸 {{ $concerts }} Concert{{ $concerts > 1 ? 's' : '' }}
+                                {{ $concerts }} Concert{{ $concerts > 1 ? 's' : '' }}
                             </span>
                             @endif
 
                             @if($conferences > 0)
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
-                                💡 {{ $conferences }} Conférence{{ $conferences > 1 ? 's' : '' }}
+                                {{ $conferences }} Conférence{{ $conferences > 1 ? 's' : '' }}
                             </span>
                             @endif
 
                             @if($ateliers > 0)
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-800">
-                                🛠️ {{ $ateliers }} Atelier{{ $ateliers > 1 ? 's' : '' }}
+                                {{ $ateliers }} Atelier{{ $ateliers > 1 ? 's' : '' }}
                             </span>
                             @endif
                         </div>
@@ -108,7 +108,7 @@
             </div>
             @else
             <div class="text-center py-20">
-                <div class="text-festival-dark/30 text-8xl mb-6">🎪</div>
+                <div class="text-festival-dark/30 text-8xl mb-6"></div>
                 <p class="text-festival-dark/60 text-2xl font-light">Aucun festival programmé pour le moment</p>
                 <p class="text-festival-dark/40 mt-2">Restez connectés pour découvrir nos prochains événements !</p>
             </div>

@@ -21,7 +21,7 @@
         <div class="text-center text-white px-6">
             <h1 class="text-5xl font-bold mb-4 uppercase">{{ $festival->THEMEFEST }}</h1>
             <div class="text-xl">
-                📅 Du {{ \Carbon\Carbon::parse($festival->DATEDEBFEST)->format('d/m/Y') }} 
+                Du {{ \Carbon\Carbon::parse($festival->DATEDEBFEST)->format('d/m/Y') }} 
                 au {{ \Carbon\Carbon::parse($festival->DATEFINFEST)->format('d/m/Y') }}
             </div>
         </div>
@@ -33,14 +33,14 @@
         <!-- CONCERTS -->
         @if($concerts->count() > 0)
         <div class="mb-16">
-            <h2 class="text-3xl font-bold mb-8 border-l-4 border-festival-primary pl-4 flex items-center text-festival-dark">
-                <span class="text-4xl mr-3">🎵</span> Concerts
+            <h2 class="text-3xl font-bold mb-8 border-l-4 border-festival-primary pl-4 text-festival-dark">
+                Concerts
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach($concerts as $manif)
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 flex flex-col border-t-4 border-festival-primary">
                     <div class="h-48 bg-gradient-to-br from-festival-primary to-festival-secondary relative flex items-center justify-center">
-                        <div class="text-white text-6xl">🎸</div>
+                        <div class="text-white text-6xl"></div>
                         <div class="absolute top-4 right-4 bg-white text-festival-dark font-bold px-3 py-1 rounded-full text-sm shadow">
                             {{ $manif->PRIXMANIF == 0 ? 'Gratuit' : number_format($manif->PRIXMANIF, 0) . ' €' }}
                         </div>
@@ -62,22 +62,22 @@
                                 @endphp
                                 @if($totalAvis > 0)
                                     <span class="text-xs font-semibold text-festival-dark flex items-center gap-1">
-                                        ⭐ {{ number_format($noteMoyenne, 1) }} ({{ $totalAvis }})
+                                        ★ {{ number_format($noteMoyenne, 1) }} ({{ $totalAvis }})
                                     </span>
                                 @endif
                             </div>
                             <div class="flex gap-2">
-                                <a href="{{ route('reservation.create', $manif->IDMANIF) }}" 
-                                   class="flex-1 bg-festival-primary text-white text-center px-3 py-2 rounded-lg text-sm font-bold hover:bg-festival-secondary transition">
-                                    Réserver
-                                </a>
-                                @if($totalAvis > 0)
-                                    <a href="{{ route('avis.index', $manif->IDMANIF) }}" 
-                                       class="bg-festival-dark/10 text-festival-dark px-3 py-2 rounded-lg text-sm font-bold hover:bg-festival-dark/20 transition" title="Voir les avis">
-                                        📊
-                                    </a>
-                                @endif
-                            </div>
+                                 <a href="{{ route('reservation.create', $manif->IDMANIF) }}" 
+                                    class="flex-1 bg-festival-primary text-white text-center px-3 py-2 rounded-lg text-sm font-bold hover:bg-festival-secondary transition">
+                                     Réserver
+                                 </a>
+                                 @if($totalAvis > 0)
+                                     <a href="{{ route('avis.index', $manif->IDMANIF) }}" 
+                                        class="bg-festival-dark/10 text-festival-dark px-3 py-2 rounded-lg text-sm font-bold hover:bg-festival-dark/20 transition" title="Voir les avis">
+                                         
+                                     </a>
+                                 @endif
+                             </div>
                         </div>
                     </div>
                 </div>
@@ -90,13 +90,13 @@
         @if($conferences->count() > 0)
         <div class="mb-16">
             <h2 class="text-3xl font-bold mb-8 border-l-4 border-green-600 pl-4 flex items-center text-festival-dark">
-                <span class="text-4xl mr-3">🎤</span> Conférences
+                Conférences
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach($conferences as $manif)
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 flex flex-col border-t-4 border-green-600">
                     <div class="h-48 bg-gradient-to-br from-green-500 to-teal-600 relative flex items-center justify-center">
-                        <div class="text-white text-6xl">💡</div>
+                        <div class="text-white text-6xl"></div>
                         <div class="absolute top-4 right-4 bg-white text-festival-dark font-bold px-3 py-1 rounded-full text-sm shadow">
                             {{ $manif->PRIXMANIF == 0 ? 'Gratuit' : number_format($manif->PRIXMANIF, 0) . ' €' }}
                         </div>
@@ -118,22 +118,22 @@
                                 @endphp
                                 @if($totalAvis > 0)
                                     <span class="text-xs font-semibold text-festival-dark flex items-center gap-1">
-                                        ⭐ {{ number_format($noteMoyenne, 1) }} ({{ $totalAvis }})
+                                        ★ {{ number_format($noteMoyenne, 1) }} ({{ $totalAvis }})
                                     </span>
                                 @endif
                             </div>
                             <div class="flex gap-2">
-                                <a href="{{ route('reservation.create', $manif->IDMANIF) }}" 
-                                   class="flex-1 bg-green-600 text-white text-center px-3 py-2 rounded-lg text-sm font-bold hover:bg-green-700 transition">
-                                    Réserver
-                                </a>
-                                @if($totalAvis > 0)
-                                    <a href="{{ route('avis.index', $manif->IDMANIF) }}" 
-                                       class="bg-festival-dark/10 text-festival-dark px-3 py-2 rounded-lg text-sm font-bold hover:bg-festival-dark/20 transition" title="Voir les avis">
-                                        📊
-                                    </a>
-                                @endif
-                            </div>
+                                 <a href="{{ route('reservation.create', $manif->IDMANIF) }}" 
+                                    class="flex-1 bg-green-600 text-white text-center px-3 py-2 rounded-lg text-sm font-bold hover:bg-green-700 transition">
+                                     Réserver
+                                 </a>
+                                 @if($totalAvis > 0)
+                                     <a href="{{ route('avis.index', $manif->IDMANIF) }}" 
+                                        class="bg-festival-dark/10 text-festival-dark px-3 py-2 rounded-lg text-sm font-bold hover:bg-festival-dark/20 transition" title="Voir les avis">
+                                         
+                                     </a>
+                                 @endif
+                             </div>
                         </div>
                     </div>
                 </div>
@@ -145,14 +145,14 @@
         <!-- ATELIERS -->
         @if($ateliers->count() > 0)
         <div class="mb-16">
-            <h2 class="text-3xl font-bold mb-8 border-l-4 border-orange-600 pl-4 flex items-center text-festival-dark">
-                <span class="text-4xl mr-3">🎨</span> Ateliers
+            <h2 class="text-3xl font-bold mb-8 border-l-4 border-orange-600 pl-4 text-festival-dark">
+                Ateliers
             </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach($ateliers as $manif)
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 flex flex-col border-t-4 border-orange-600">
                     <div class="h-48 bg-gradient-to-br from-orange-500 to-red-600 relative flex items-center justify-center">
-                        <div class="text-white text-6xl">🛠️</div>
+                        <div class="text-white text-6xl"></div>
                         <div class="absolute top-4 right-4 bg-white text-festival-dark font-bold px-3 py-1 rounded-full text-sm shadow">
                             {{ $manif->PRIXMANIF == 0 ? 'Gratuit' : number_format($manif->PRIXMANIF, 0) . ' €' }}
                         </div>

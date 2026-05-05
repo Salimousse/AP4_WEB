@@ -65,7 +65,7 @@
 
         @if($conversations->isEmpty())
             <div class="text-center py-12">
-                <div class="text-gray-400 text-6xl mb-4">💬</div>
+                <div class="text-gray-400 text-6xl mb-4"></div>
                 <h3 class="text-xl font-semibold text-gray-600 mb-2">Aucune conversation</h3>
                 <p class="text-gray-500">Les conversations avec demandes d'admin apparaîtront ici.</p>
             </div>
