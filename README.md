@@ -21,10 +21,8 @@ Ce projet est une application web complète développée avec **Laravel** dédi�
 - **Affectation aux événements** : Gestion de qui *anime*, *présente* ou *produit* lors d'une manifestation.
 
 ### Chatbot & Messagerie en Temps Réel
-- **Messagerie Instantanée** : Système de chat en temps réel (alimenté par **Reverb / Pusher**).
 - **Service Client Automatisé (Chatbot)** : Intégration d'un assistant virtuel (`ChatbotService`).
 - **Détection d'Escalade** : Système intelligent (`EscalationDetector`) capable d'analyser la conversation pour rediriger un utilisateur vers un administrateur humain si besoin.
-- **Gestion des Conversations** : Nettoyage automatique des sessions de chat à la déconnexion (`CleanupConversationsOnLogout`).
 
 ### Sponsoring
 - **Gestion des Sponsors** : Mise en valeur des partenaires commerciaux du festival.
